@@ -23,7 +23,7 @@ public class Laser : MonoBehaviour
 		bool ok = Physics.Raycast (transform.position, Vector3.forward, out hit, 100);
 		if (ok)
 		{					
-			Debug.Log (hit.distance);
+			//Debug.Log (hit.distance);
 			part.startLifetime = hit.distance/5.08f;
 			end = hit.point;
 			//particles = part.GetParticles ();
