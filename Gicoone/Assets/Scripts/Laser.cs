@@ -3,32 +3,34 @@ using System.Collections;
 
 public class Laser : MonoBehaviour
 {
-	private Transform startPosition;
-	private Transform endPosition;
+	private Vector3 start;
+	private Vector3 end;
 	private LineRenderer laser;
+	private ParticleSystem part;
+	//private Particle[] particles;
 
 	void Start ()
 	{
+		part = GetComponent<ParticleSystem> ();
 		laser = GetComponent<LineRenderer> ();
 		laser.SetWidth (.2f,.2f);
-		startPosition.position = new Vector3(0.0f,0.0f,0.0f);
-		//endPosition.position = transform.position;
+		start = transform.position;
 	}
 	
 	void FixedUpdate () 
 	{
-		Vector3 forward = transform.forward;
 		RaycastHit hit;
 		bool ok = Physics.Raycast (transform.position, Vector3.forward, out hit, 100);
 		if (ok)
-		{			
-			Debug.Log ("Intercetta qualcosa  " + hit.distance.ToString());
-			//if (hit.point!=null) 
-			//{
-				endPosition.position = hit.point;
-			//}
+		{					
+			Debug.Log (hit.distance);
+			part.startLifetime = hit.distance/5.08f;
+			end = hit.point;
+			//particles = part.GetParticles ();
+
 		}
-		laser.SetPosition (0, startPosition.position);
-		laser.SetPosition (1, endPosition.position);
+
+		laser.SetPosition (0, start);
+		laser.SetPosition (1, end);
 	}
 }
