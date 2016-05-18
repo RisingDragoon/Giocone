@@ -36,7 +36,7 @@ public class GameController : MonoBehaviour
         else
             cubeMesh.material = red;
 		
-        if ( Input.GetButtonDown( "Stealth" ) )
+        if ( Input.GetButtonDown( "Jump" ) )
         {
             if ( canMove )
                 Debug.Log( "OK!" );

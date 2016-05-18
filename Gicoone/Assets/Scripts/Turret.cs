@@ -12,17 +12,35 @@ public class Couple
 		_ver = ver;
 	}
 }
-public class Turret : MonoBehaviour //Mettere Mobile come classe padre
+public class Turret : Mobile 
 {
-	public Couple[] path = new Couple[5];
+	public Couple[] path = new Couple[1];
+	private int i=0;
 
-	void Start ()
+	void Start()
 	{
-		
+		StartCoroutine ( Movimento () );
 	}
-	
-	void Update () 
+
+	public void Muoviti()
+	{		
+		AttemptMove ( path[i]._hor , path[i]._ver );
+		i++;
+		if (i == path.Length)
+		{
+			i = 0;
+		}
+	}
+
+	private IEnumerator Movimento()
 	{
-	
+		yield return new WaitForSeconds(1);
+
+		while (true) 
+		{	
+			Muoviti ();
+			yield return new WaitForSeconds (1);
+		}
+
 	}
 }

@@ -17,7 +17,7 @@ public class Mobile : MonoBehaviour
 	// private Animator anim;
 	private LayerMask blockingLayer;
 	
-	void Start()
+	void Awake()
 	{
 		isMoving = false;
 		
