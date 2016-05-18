@@ -5,53 +5,57 @@ public class GameController : MonoBehaviour
 {
     public float bpm;
     public float tolerance;
-
+	
+	[HideInInspector]
+	public bool canMove;
+	
+	// Queste variabili servono ad interfacciarsi col cubo verde/rosso di debug.
     public MeshRenderer cubeMesh;
     public Material red;
     public Material green;
-
-    private bool canPress;
+	
     private float beat;
-
+	
     private AudioSource audioSource;
-
-	void Start ()
+	
+	void Start()
     {
-        canPress = false;
+        canMove = false;
         beat = 60.0f / bpm;
-
+		
         audioSource = GetComponent<AudioSource>();
-
-        StartCoroutine(PlayBeat());
+		
+        StartCoroutine( PlayBeat() );
 	}
 	
-	void Update ()
+	// Questa funzione serve ad interfacciarsi col cubo verde/rosso di debug.
+	void Update()
     {
-        if (canPress)
+        if ( canMove )
             cubeMesh.material = green;
         else
             cubeMesh.material = red;
-
-        if (Input.GetButtonDown("Jump"))
+		
+        if ( Input.GetButtonDown( "Stealth" ) )
         {
-            if (canPress)
-                Debug.Log("OK!");
+            if ( canMove )
+                Debug.Log( "OK!" );
             else
-                Debug.Log("Vaffanculo.");
+                Debug.Log( "Vaffanculo." );
         }
 	}
-
+	
     private IEnumerator PlayBeat()
     {
         yield return new WaitForSeconds( beat - tolerance / 2 );
-
-        while (true)
+		
+        while ( true )
         {
-            canPress = true;
+            canMove = true;
             audioSource.Play(); // Placeholder per la musica.
             yield return new WaitForSeconds( tolerance );
-
-            canPress = false;
+			
+            canMove = false;
             yield return new WaitForSeconds( beat - tolerance );
         }
     }
