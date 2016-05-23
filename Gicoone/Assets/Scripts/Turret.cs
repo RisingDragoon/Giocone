@@ -15,12 +15,27 @@ public class Couple
 public class Turret : Mobile 
 {
 	public Couple[] path = new Couple[1];
+	public float bpm;
+	protected float beat;
 	private int i = 0;
-	private int dir = 1;
+	private float doubleBeat;
+	protected int dir = 1;
+	public string tipoTorretta;//ferma o mobile
+	public GameObject cerchio;//ciò che deve sparare la torretta ferma
+
 
 	void Start()
 	{
-		StartCoroutine ( Movimento () );
+		beat = 60.0f / bpm;
+		doubleBeat = beat + beat;
+		if (tipoTorretta=="mobile")
+		{
+			StartCoroutine ( Movimento () );
+		}
+		else if (tipoTorretta=="ferma")
+		{
+			StartCoroutine ( Spara (dir) );
+		}
 	}
 
 	public void Muoviti()
@@ -103,11 +118,21 @@ public class Turret : Mobile
 
 	private IEnumerator Movimento()
 	{
-		yield return new WaitForSeconds(1);
+		yield return new WaitForSeconds(beat/2);
 		while (true) 
 		{	
 			Muoviti ();
-			yield return new WaitForSeconds (1);
+			yield return new WaitForSeconds (beat);
+		}
+
+	}
+	private IEnumerator Spara(int direzione)
+	{
+		yield return new WaitForSeconds(1);
+		while (true) 
+		{	
+			Instantiate (cerchio,transform.position,Quaternion.identity);
+			yield return new WaitForSeconds (doubleBeat);
 		}
 
 	}

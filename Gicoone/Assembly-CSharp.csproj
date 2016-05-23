@@ -48,6 +48,7 @@
      <Compile Include="Assets\Scripts\GameController.cs" />
      <Compile Include="Assets\Scripts\Laser.cs" />
      <Compile Include="Assets\Scripts\Mobile.cs" />
+     <Compile Include="Assets\Scripts\Mover.cs" />
      <Compile Include="Assets\Scripts\Player.cs" />
      <Compile Include="Assets\Scripts\Turret.cs" />
  <Reference Include="UnityEngine.UI">
