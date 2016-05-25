@@ -3,15 +3,15 @@ using System.Collections;
 
 public class Mobile : MonoBehaviour
 {
-	public bool canRotate;
-	
-	protected enum Direction : byte
+	public enum Direction : byte
 	{
 		Up,
 		Down,
 		Left,
 		Right
 	};
+
+    public bool canRotate;
 	
 	protected bool isMoving;
 	// protected bool busy;
@@ -26,25 +26,23 @@ public class Mobile : MonoBehaviour
 	// private Animator anim;
 	private LayerMask blockingLayer;
 	
-	void Start()
+	protected void Start()
 	{
 		isMoving = false;
 		
 		GameObject gameControllerObj = GameObject.FindGameObjectWithTag( "GameController" );
 		
 		if ( gameControllerObj != null )
-        {
-            gameController = gameControllerObj.GetComponent<GameController>();
-        }
-
-        rbody = GetComponent<Rigidbody>();
+			gameController = gameControllerObj.GetComponent<GameController>();
+		
+		rbody = GetComponent<Rigidbody>();
 		// coll = GetComponent<BoxCollider>();
 		// anim = GetComponent<Animator>();
 
 		blockingLayer = 1 << LayerMask.NameToLayer( "Blocking" );
 	}
 	
-	protected bool AttemptMove( int hor, int ver )
+	public bool AttemptMove( int hor, int ver )
 	{
 		Vector3 startPos = transform.position;
 		Vector3 endPos = startPos + new Vector3( hor, 0.0f, ver );
@@ -75,7 +73,6 @@ public class Mobile : MonoBehaviour
                 {
                     return false;
                 }
-                   
             }
             else
             {
@@ -90,7 +87,7 @@ public class Mobile : MonoBehaviour
 		// anim.SetInteger( "ver", ver );
 	}
 	
-	protected bool AttemptMove( Direction dir )
+	public bool AttemptMove( Direction dir )
 	{
 		int hor, ver;
 		
@@ -165,4 +162,28 @@ public class Mobile : MonoBehaviour
 		}
 	}
 	*/
+}
+
+public static class DirectionExtension
+{
+    public static Mobile.Direction Invert( this Mobile.Direction dir )
+    {
+        switch ( dir )
+        {
+            case Mobile.Direction.Up:
+                dir = Mobile.Direction.Down;
+                break;
+            case Mobile.Direction.Down:
+                dir = Mobile.Direction.Up;
+                break;
+            case Mobile.Direction.Left:
+                dir = Mobile.Direction.Right;
+                break;
+            case Mobile.Direction.Right:
+                dir = Mobile.Direction.Left;
+                break;
+        }
+
+        return dir;
+    }
 }

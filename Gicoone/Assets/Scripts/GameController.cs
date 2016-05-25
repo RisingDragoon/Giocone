@@ -50,9 +50,15 @@ public class GameController : MonoBehaviour
         if ( Input.GetButtonDown( "Stealth" ) )
         {
             if ( canMove )
-                Debug.Log( "OK!" );
+            {
+                Debug.Log("OK!");
+            }
+                
             else
-                Debug.Log( "Vaffanculo." );
+            {
+                Debug.Log("Vaffanculo.");
+            }
+                
         }
 	}
 	
@@ -70,11 +76,13 @@ public class GameController : MonoBehaviour
 
             foreach ( Turret enemy in enemies )
 			{
-				enemy.Muoviti();
+                if (enemy.active)
+                {
+                    enemy.ExecuteAction();
+                }                
 			}
 			
-            yield return new WaitForSeconds( halfTolerance );
-			
+            yield return new WaitForSeconds( halfTolerance );			
             canMove = false;
             yield return new WaitForSeconds( beat - tolerance );
         }
