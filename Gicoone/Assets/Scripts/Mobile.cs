@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Mobile : MonoBehaviour
 {
+	public bool canRotate;
+	
 	protected enum Direction : byte
 	{
 		Up,
@@ -125,13 +127,24 @@ public class Mobile : MonoBehaviour
 		
 		// anim.SetInteger( "pace", 1 );
 		
-		float sqrDistanceLeft = (transform.position - endPos).sqrMagnitude;
+		Quaternion endRot = Quaternion.LookRotation( endPos - transform.position );
 		
-		while ( sqrDistanceLeft > float.Epsilon )
+		float sqrDistanceLeft = ( transform.position - endPos ).sqrMagnitude;
+		float angleLeft = Quaternion.Angle( transform.rotation, endRot );
+		
+		while ( sqrDistanceLeft > float.Epsilon || ( canRotate && angleLeft > float.Epsilon ) )
 		{
 			Vector3 newPos = Vector3.MoveTowards( rbody.position, endPos, speed * Time.deltaTime );
 			rbody.MovePosition( newPos );
-			sqrDistanceLeft = (transform.position - endPos).sqrMagnitude;
+			sqrDistanceLeft = ( transform.position - endPos ).sqrMagnitude;
+			
+			if ( canRotate )
+			{
+				Quaternion newRot = Quaternion.RotateTowards( rbody.rotation, endRot, speed * 90 * Time.deltaTime );
+				rbody.MoveRotation( newRot );
+				angleLeft = Quaternion.Angle( transform.rotation, endRot );
+			}
+			
 			yield return null;
 		}
 		
