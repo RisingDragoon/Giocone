@@ -31,9 +31,11 @@ public class Mobile : MonoBehaviour
 		GameObject gameControllerObj = GameObject.FindGameObjectWithTag( "GameController" );
 		
 		if ( gameControllerObj != null )
-			gameController = gameControllerObj.GetComponent<GameController>();
-		
-		rbody = GetComponent<Rigidbody>();
+        {
+            gameController = gameControllerObj.GetComponent<GameController>();
+        }
+
+        rbody = GetComponent<Rigidbody>();
 		// coll = GetComponent<BoxCollider>();
 		// anim = GetComponent<Animator>();
 
@@ -68,10 +70,15 @@ public class Mobile : MonoBehaviour
                     return true;
                 }
                 else
+                {
                     return false;
+                }
+                   
             }
             else
+            {
                 return false;
+            }
         }
 
 		// else
