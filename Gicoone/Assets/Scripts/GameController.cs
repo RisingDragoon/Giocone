@@ -43,9 +43,13 @@ public class GameController : MonoBehaviour
 	void Update()
     {
         if ( canMove )
+		{
             cubeMesh.material = green;
+		}
         else
+		{
             cubeMesh.material = red;
+		}
 		
         if ( Input.GetButtonDown( "Stealth" ) )
         {
@@ -76,7 +80,7 @@ public class GameController : MonoBehaviour
 
             foreach ( Turret enemy in enemies )
 			{
-                if (enemy.active)
+                if ( enemy.active )
                 {
                     enemy.ExecuteAction();
                 }                

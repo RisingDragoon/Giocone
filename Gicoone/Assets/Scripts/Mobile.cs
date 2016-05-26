@@ -19,7 +19,7 @@ public class Mobile : MonoBehaviour
 	
 	protected GameController gameController;
 
-    private float speed = 10.0f;
+    private float speed;
 	
 	private Rigidbody rbody;
 	// private BoxCollider coll;
@@ -31,9 +31,13 @@ public class Mobile : MonoBehaviour
 		isMoving = false;
 		
 		GameObject gameControllerObj = GameObject.FindGameObjectWithTag( "GameController" );
-		
-		if ( gameControllerObj != null )
-			gameController = gameControllerObj.GetComponent<GameController>();
+
+        if ( gameControllerObj != null )
+        {
+            gameController = gameControllerObj.GetComponent<GameController>();
+        }
+
+        speed = gameController.bpm / 6.0f;
 		
 		rbody = GetComponent<Rigidbody>();
 		// coll = GetComponent<BoxCollider>();
