@@ -13,7 +13,7 @@ public class Turret : Mobile
 
     public Direction[] path = new Direction[1];
     //protected Direction[] pathInverse = new Direction[1];
-    protected Direction turretDirection = Direction.Right;
+	public Direction turretDirection = Direction.Right;
 
     public TurretType turretType;//ferma o mobile
     public GameObject circlePref;//ciò che deve sparare la torretta ferma
