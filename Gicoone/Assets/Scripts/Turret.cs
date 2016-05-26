@@ -9,19 +9,20 @@ public class Turret : Mobile
         Stop,
         Mobile
     };
+
     public bool active = true;//da controllare nell'animator
 
     public Direction[] path = new Direction[1];
-    //protected Direction[] pathInverse = new Direction[1];
 	public Direction turretDirection = Direction.Right;
 
     public TurretType turretType;//ferma o mobile
+
     public GameObject circlePref;//ciò che deve sparare la torretta ferma
     public GameObject visibilityTurret;
+
     public int viewDistance;
     public bool hasArea;
 
-    private float doubleBeat;
     private int indexPath = 0;
     private bool inverse = false;
     private bool temp = false;
@@ -46,21 +47,24 @@ public class Turret : Mobile
 
     public void ExecuteAction()
     {
-        if (turretType == TurretType.Stop)
+        if ( turretType == TurretType.Stop )
         {
-            if (circles!=null)
+            if ( circles!=null)
             {
-                foreach (Mobile circle in circles)
+                for ( int i = circles.Count-1; i >= 0; i-- )
                 {
-                    if (!circle.AttemptMove(turretDirection))
+                    if ( circles[i] == null )
                     {
-                        Destroy(circle);
-                        circles.Remove(circle);
+                        circles.RemoveAt(i);
                     }
-                }
+                    else
+                    {
+                        circles[i].AttemptMove( turretDirection );                        
+                    }                    
+                }   
             }
             
-            if (turn)
+            if ( turn )
             {
                 Spara();
                 turn = !turn;
@@ -76,18 +80,18 @@ public class Turret : Mobile
     }
     public void Muoviti()
     {        
-        if (!inverse)
+        if ( !inverse )
         {
             //normale
-            temp = AttemptMove(path[indexPath]);
+            temp = AttemptMove( path[indexPath] );
         }
         else
         {
             //contrario
             Direction newDirection = path[indexPath].Invert();
-            temp = AttemptMove(newDirection);
+            temp = AttemptMove( newDirection );
         }
-        if (temp == inverse)
+        if ( temp == inverse )
         {
             inverse = true;
         }
@@ -95,7 +99,7 @@ public class Turret : Mobile
         {
             inverse = false;
         }
-        if (!inverse)//normale
+        if ( !inverse )//normale
         {
             indexPath++;
         }
@@ -103,21 +107,22 @@ public class Turret : Mobile
         {
             indexPath--;
         }
-        if (indexPath == path.Length)//arriva in fondo normale
+        if ( indexPath == path.Length )//arriva in fondo normale
         {
             indexPath = 0;
         }
-        if (inverse && indexPath == 0)//arriva in fondo inverso
+        if ( inverse && indexPath == 0 )//arriva in fondo inverso
         {
             indexPath = path.Length;
         }
+        turretDirection = path[indexPath];
     }
 
     private void Spara()
     {       
-        GameObject circleObj = Instantiate(circlePref, transform.position, Quaternion.identity)as GameObject;
+        GameObject circleObj = Instantiate( circlePref, transform.position, Quaternion.identity ) as GameObject;
         Mobile circle = circleObj.GetComponent<Mobile>();
-        circles.Add(circle);          
+        circles.Add( circle );          
     }
 
 }
