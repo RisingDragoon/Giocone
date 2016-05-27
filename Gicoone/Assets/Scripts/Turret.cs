@@ -79,43 +79,62 @@ public class Turret : Mobile
 
     }
     public void Muoviti()
-    {        
-        if ( !inverse )
+    {
+        Debug.Log(indexPath);
+       
+        if ( inverse )
         {
-            //normale
-            temp = AttemptMove( path[indexPath] );
+            Direction newDirection = path[indexPath].Invert();
+            temp = AttemptMove(newDirection);
+            //Debug.Log(newDirection);            
         }
         else
         {
-            //contrario
-            Direction newDirection = path[indexPath].Invert();
-            temp = AttemptMove( newDirection );
+            temp = AttemptMove(path[indexPath]);
+            //Debug.Log(path[indexPath]);
         }
-        if ( temp == inverse )
+        if (temp)
         {
+            if (!inverse)//normale
+            {
+                indexPath++;
+            }
+            else//inverso
+            {
+                indexPath--;
+            }
+        }
+
+        if (temp == inverse)
+        {
+            if (temp == false && !inverse)
+            {
+                indexPath--;
+            }
             inverse = true;
         }
         else
         {
-            inverse = false;
+            if (temp == false && inverse == true)
+            {
+                inverse = false;
+                indexPath++;
+            }
         }
-        if ( !inverse )//normale
-        {
-            indexPath++;
-        }
-        else//inverso
-        {
-            indexPath--;
-        }
-        if ( indexPath == path.Length )//arriva in fondo normale
+        if ( indexPath == path.Length)//arriva in fondo normale
         {
             indexPath = 0;
         }
-        if ( inverse && indexPath == 0 )//arriva in fondo inverso
+        else
         {
-            indexPath = path.Length;
+            if (indexPath == -1)//arriva in fondo inverso
+            {
+                indexPath = path.Length-1;
+            }
         }
+        
         turretDirection = path[indexPath];
+       
     }
 
     private void Spara()
