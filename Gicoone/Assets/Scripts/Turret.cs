@@ -55,7 +55,9 @@ public class Turret : Mobile
                 {
                     if ( circles[i] == null )
                     {
+                        //GameObject obj = circles[i].gameObject;
                         circles.RemoveAt(i);
+                        //Destroy(obj);
                     }
                     else
                     {
