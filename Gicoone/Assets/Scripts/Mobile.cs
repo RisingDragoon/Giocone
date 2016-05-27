@@ -57,31 +57,48 @@ public class Mobile : MonoBehaviour
 		bool isBlocked = Physics.Linecast( startPos, endPos, out hit, blockingLayer );
 		// coll.enabled = true;
         
-        if ( !isBlocked )
+		if ( !isBlocked || transform.CompareTag( "Projectile" ) )
         {
             StartCoroutine( MoveSmoothly( endPos ) );
             return true;
         }
+        else if ( transform.CompareTag( "Player" ) )
+		{
+			if ( hit.transform.CompareTag( "Finish" ) )
+			{
+				Destroy( hit.transform.gameObject );
+				Debug.Log( "Il player ha preso il vinile!" );
+				return true;
+			}
+			else if ( hit.transform.CompareTag( "Pushable" ) )
+			{
+				Mobile pushed = hit.transform.GetComponent<Mobile>();
+
+				if ( pushed != null && pushed.AttemptMove( hor, ver ) )
+				{
+					StartCoroutine( MoveSmoothly( endPos ) );
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else if ( hit.transform.CompareTag( "Pickup" ) )
+			{
+				StartCoroutine( MoveSmoothly( endPos ) );
+				Destroy( hit.transform.gameObject );
+				gameObject.GetComponent<Player>().GainLife();
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
         else
         {
-            if ( hit.transform.tag == "Pushable" )
-            {
-                Mobile pushed = hit.transform.GetComponent<Mobile>();
-
-                if ( pushed != null && pushed.AttemptMove( hor, ver ) )
-                {
-                    StartCoroutine( MoveSmoothly( endPos ) );
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
 		// else
@@ -150,22 +167,7 @@ public class Mobile : MonoBehaviour
 		}
 		
 		isMoving = false;
-		// TriggerChecks();
 	}
-	
-	/*
-	private void TriggerChecks()
-	{
-		// coll.enabled = false;
-		Collider2D step = Physics2D.OverlapPoint( transform.position );
-		// coll.enabled = true;
-
-		if ( step != null )
-		{
-			Debug.Log( "Trigger attivato!" );
-		}
-	}
-	*/
 }
 
 public static class DirectionExtension

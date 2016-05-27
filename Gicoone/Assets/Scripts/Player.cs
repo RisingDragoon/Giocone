@@ -46,15 +46,25 @@ public class Player : Mobile
         }
 	}
 
+	public void GainLife()
+	{
+		if ( lives < maxLives )
+		{
+			lives++;
+		}
+
+		Debug.Log( "Il player ha ottenuto una vita. Ora ne ha " + lives + "." );
+	}
+
     private void LoseLife()
     {
         lives--;
-        Debug.Log( "Hai perso una vita, scemo! Te ne restano " + lives );
+        Debug.Log( "Il player ha perso una vita. Ne rimangono " + lives + "." );
 		
 		if ( lives == 0 )
 		{
-			Debug.Log( "Sei morto!" );
 			// Gestire il game over.
+			Debug.Log( "Il player è morto!" );
 		}
 		
         // Gestire la GUI.
