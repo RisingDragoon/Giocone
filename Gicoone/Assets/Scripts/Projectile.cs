@@ -3,15 +3,16 @@ using System.Collections;
 
 public class Projectile : Mobile
 {
-    void OnTriggerEnter(Collider other)
+    void OnTriggerEnter( Collider other )
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Blocking"))
+        if ( other.gameObject.layer == LayerMask.NameToLayer( "Blocking" ) )
         {
-            if (other.tag == "Player")
+            if ( other.tag == "Player" )
             {
-                Debug.Log("Il player deve fre cose");
+                Debug.Log( "Il player deve fre cose" );
             }
-            Destroy(gameObject);
+
+            Destroy( gameObject );
         }
     }
 }

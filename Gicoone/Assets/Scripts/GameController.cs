@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class GameController : MonoBehaviour
 {
     public float bpm;
-    public float tolerance;
 	
 	[HideInInspector]
 	public bool canMove;
@@ -16,7 +15,8 @@ public class GameController : MonoBehaviour
     public Material green;
 	
     private float beat;
-	private List<Turret> enemies;
+    private float tolerance;
+    private List<Turret> enemies;
 	
     private AudioSource audioSource;
 	
@@ -24,6 +24,7 @@ public class GameController : MonoBehaviour
     {
         canMove = false;
         beat = 60.0f / bpm;
+        tolerance = beat / 2;
 		enemies = new List<Turret>();
 		
 		GameObject[] enemiesObj = GameObject.FindGameObjectsWithTag("Enemy");
