@@ -24,7 +24,7 @@ public class GameController : MonoBehaviour
     {
         canMove = false;
         beat = 60.0f / bpm;
-        tolerance = beat / 2;
+        tolerance = beat * 0.5f;
 		enemies = new List<Turret>();
 		
 		GameObject[] enemiesObj = GameObject.FindGameObjectsWithTag("Enemy");
@@ -70,13 +70,14 @@ public class GameController : MonoBehaviour
     private IEnumerator PlayBeat()
     {
         float halfTolerance = tolerance / 2;
+        audioSource.Play(); // Musica.
 
         yield return new WaitForSeconds( beat - halfTolerance );
 		
         while ( true )
         {
             canMove = true;
-            audioSource.Play(); // Placeholder per la musica.
+            // audioSource.Play(); // Placeholder per la musica.
             yield return new WaitForSeconds( halfTolerance );
 
             foreach ( Turret enemy in enemies )
