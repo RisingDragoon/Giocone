@@ -24,7 +24,7 @@ public class Mobile : MonoBehaviour
 	private Rigidbody rbody;
 	// private BoxCollider coll;
 	// private Animator anim;
-	private LayerMask blockingLayer;
+	protected LayerMask blockingLayer;
 	
 	protected void Start()
 	{
