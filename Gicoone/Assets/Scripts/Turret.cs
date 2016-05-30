@@ -9,31 +9,38 @@ public class Turret : Mobile
         Stop,
         Mobile
     };
-
+    public enum ShotType : byte
+    {
+        EveryBeat,
+        EveryTwoBeat,
+        FiveStop
+    };
     public bool active = true;//da controllare nell'animator
 
     public Direction[] path = new Direction[1];
 	public Direction turretDirection = Direction.Right;
 
     public TurretType turretType;//ferma o mobile
+    public ShotType shotType;
 
     public GameObject circlePref;//ciò che deve sparare la torretta ferma
     public GameObject visibilityTurret;
 
     public int viewDistance;
-    public bool hasArea;
+    public bool hasAreaActivation;
 
     private int indexPath = 0;
+    private int cont = 0;
     private bool inverse = false;
     private bool temp = false;
     private bool turn = true;
-    private List<Mobile> circles;
+    private List<Projectile> circles;
 
     new void Start()
     {
 		base.Start();
-        circles = new List<Mobile>();
-        if (hasArea)
+        circles = new List<Projectile>();
+        if (hasAreaActivation)
         {
             active = false;//da controllare nell'animator
             Vector3 visibilityPos = transform.position;
@@ -47,6 +54,7 @@ public class Turret : Mobile
 
     public void ExecuteAction()
     {
+        IfRotateShot();
         if ( turretType == TurretType.Stop )
         {
             if ( circles!=null)
@@ -55,45 +63,66 @@ public class Turret : Mobile
                 {
                     if ( circles[i] == null )
                     {
-                        //GameObject obj = circles[i].gameObject;
                         circles.RemoveAt(i);
-                        //Destroy(obj);
                     }
                     else
                     {
-                        circles[i].AttemptMove( turretDirection );                        
+                        //fa muovere le palle
+                        circles[i].AttemptMove( turretDirection );
+                        circles[i].CountBeat();
                     }                    
                 }   
             }
-            
-            if ( turn )
+            if (shotType==ShotType.EveryBeat)
             {
-                Spara();
-                turn = !turn;
-                return;
+                Shot();
             }
-            turn = !turn;
+            else if (shotType == ShotType.EveryTwoBeat)
+            {
+                if (turn)
+                {
+                    Shot();
+                    turn = !turn;
+                    return;
+                }
+                turn = !turn;
+            }
+            else
+            {
+                cont++;
+                if (cont>5)
+                {
+                    if (cont==8)
+                    {
+                        cont = 0;
+                    }
+                }
+                else
+                {
+                    Shot();                   
+                }
+            }
+           
         }
         else
         {
-            Muoviti();
+            Move();
         }
 
     }
-    public void Muoviti()
+    public void Move()
     {
-        Debug.Log(indexPath);
+        //Debug.Log(indexPath);
        
         if ( inverse )
         {
             Direction newDirection = path[indexPath].Invert();
+            
             temp = AttemptMove(newDirection);
-            //Debug.Log(newDirection);            
         }
         else
         {
             temp = AttemptMove(path[indexPath]);
-            //Debug.Log(path[indexPath]);
         }
         if (temp)
         {
@@ -123,7 +152,7 @@ public class Turret : Mobile
                 indexPath++;
             }
         }
-        if ( indexPath == path.Length)//arriva in fondo normale
+        if (indexPath == path.Length)//arriva in fondo normale
         {
             indexPath = 0;
         }
@@ -131,19 +160,25 @@ public class Turret : Mobile
         {
             if (indexPath == -1)//arriva in fondo inverso
             {
-                indexPath = path.Length-1;
+                indexPath = path.Length - 1;
             }
-        }
-        
+        }        
         turretDirection = path[indexPath];
-       
     }
 
-    private void Spara()
+    private void Shot()
     {       
         GameObject circleObj = Instantiate( circlePref, transform.position, Quaternion.identity ) as GameObject;
-        Mobile circle = circleObj.GetComponent<Mobile>();
+        Projectile circle = circleObj.GetComponent<Projectile>();
+        circle.lifeTime = viewDistance;
         circles.Add( circle );          
     }
 
+    private void IfRotateShot()
+    {
+        if (turretDirection != path[indexPath])
+        {
+            Shot();
+        }
+    }
 }

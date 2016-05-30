@@ -60,6 +60,7 @@ public class Mobile : MonoBehaviour
 		if ( !isBlocked || transform.CompareTag( "Projectile" ) )
         {
             StartCoroutine( MoveSmoothly( endPos ) );
+           
             return true;
         }
         else if ( transform.CompareTag( "Player" ) )
