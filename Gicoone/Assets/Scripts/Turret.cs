@@ -17,7 +17,7 @@ public class Turret : Mobile
     };
     public bool active = true;//da controllare nell'animator
 
-    public Direction[] path = new Direction[1];
+    public Direction[] pathMoving = new Direction[1];
 	public Direction turretDirection = Direction.Right;
 
     public TurretType turretType;//ferma o mobile
@@ -53,8 +53,7 @@ public class Turret : Mobile
     }
 
     public void ExecuteAction()
-    {
-        IfRotateShot();
+    {        
         if ( turretType == TurretType.Stop )
         {
             if ( circles!=null)
@@ -73,39 +72,42 @@ public class Turret : Mobile
                     }                    
                 }   
             }
-            if (shotType==ShotType.EveryBeat)
+            switch (shotType)
             {
-                Shot();
-            }
-            else if (shotType == ShotType.EveryTwoBeat)
-            {
-                if (turn)
-                {
+                case ShotType.EveryBeat:
                     Shot();
-                    turn = !turn;
-                    return;
-                }
-                turn = !turn;
-            }
-            else
-            {
-                cont++;
-                if (cont>5)
-                {
-                    if (cont==8)
+                    break;
+                case ShotType.EveryTwoBeat:
+                    if (turn)
                     {
-                        cont = 0;
+                        Shot();
+                        turn = !turn;
+                        return;
                     }
-                }
-                else
-                {
-                    Shot();                   
-                }
+                    turn = !turn;
+                    break;
+                case ShotType.FiveStop:
+                    cont++;
+                    if (cont > 5)
+                    {
+                        if (cont == 8)
+                        {
+                            cont = 0;
+                        }
+                    }
+                    else
+                    {
+                        Shot();
+                    }
+                    break;
+                default:
+                    break;
             }
-           
+                  
         }
         else
         {
+            IfRotateShot();
             Move();
         }
 
@@ -116,13 +118,13 @@ public class Turret : Mobile
        
         if ( inverse )
         {
-            Direction newDirection = path[indexPath].Invert();
+            Direction newDirection = pathMoving[indexPath].Invert();
             
             temp = AttemptMove(newDirection);
         }
         else
         {
-            temp = AttemptMove(path[indexPath]);
+            temp = AttemptMove(pathMoving[indexPath]);
         }
         if (temp)
         {
@@ -152,7 +154,7 @@ public class Turret : Mobile
                 indexPath++;
             }
         }
-        if (indexPath == path.Length)//arriva in fondo normale
+        if (indexPath == pathMoving.Length)//arriva in fondo normale
         {
             indexPath = 0;
         }
@@ -160,10 +162,10 @@ public class Turret : Mobile
         {
             if (indexPath == -1)//arriva in fondo inverso
             {
-                indexPath = path.Length - 1;
+                indexPath = pathMoving.Length - 1;
             }
         }        
-        turretDirection = path[indexPath];
+        turretDirection = pathMoving[indexPath];
     }
 
     private void Shot()
@@ -176,7 +178,7 @@ public class Turret : Mobile
 
     private void IfRotateShot()
     {
-        if (turretDirection != path[indexPath])
+        if (turretDirection != pathMoving[indexPath])
         {
             Shot();
         }
