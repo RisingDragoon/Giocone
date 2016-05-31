@@ -10,8 +10,6 @@ public class Mobile : MonoBehaviour
 		Left,
 		Right
 	};
-
-    public bool canRotate;
 	
 	protected bool isMoving;
 	// protected bool busy;
@@ -46,10 +44,10 @@ public class Mobile : MonoBehaviour
 		blockingLayer = 1 << LayerMask.NameToLayer( "Blocking" );
 	}
 	
-	public bool AttemptMove( int hor, int ver )
+	public bool AttemptMove( Vector3 offset )
 	{
 		Vector3 startPos = transform.position;
-		Vector3 endPos = startPos + new Vector3( hor, 0.0f, ver );
+		Vector3 endPos = startPos + offset;
 
         RaycastHit hit;
 		
@@ -75,7 +73,7 @@ public class Mobile : MonoBehaviour
 			{
 				Mobile pushed = hit.transform.GetComponent<Mobile>();
 
-				if ( pushed != null && pushed.AttemptMove( hor, ver ) )
+				if ( pushed != null && pushed.AttemptMove( offset ) )
 				{
 					StartCoroutine( MoveSmoothly( endPos ) );
 					return true;
@@ -111,33 +109,34 @@ public class Mobile : MonoBehaviour
 	
 	public bool AttemptMove( Direction dir )
 	{
-		int hor, ver;
+		Vector3 offset = dir.ToVector();
+		return AttemptMove( offset );
+	}
+	
+	public void Rotate( Vector3 offset )
+	{
+		Quaternion rotation = Quaternion.LookRotation( offset );
+		StartCoroutine( RotateSmoothly( rotation ) );
+	}
+	
+	public void Rotate( Direction dir )
+	{
+		Vector3 offset = dir.ToVector();
+		Rotate( offset );
+	}
+	
+	private IEnumerator RotateSmoothly( Quaternion endRot )
+	{
+		float angleLeft = Quaternion.Angle( transform.rotation, endRot );
 		
-		switch ( dir )
+		while ( angleLeft > float.Epsilon )
 		{
-			case Direction.Up:
-				hor = 0;
-				ver = 1;
-				break;
-			case Direction.Down:
-				hor = 0;
-				ver = -1;
-				break;
-			case Direction.Left:
-				hor = -1;
-				ver = 0;
-				break;
-			case Direction.Right:
-				hor = 1;
-				ver = 0;
-				break;
-			default:
-				hor = 0;
-				ver = 0;
-				break;
+			Quaternion newRot = Quaternion.RotateTowards( rbody.rotation, endRot, speed * 90 * Time.deltaTime );
+			rbody.MoveRotation( newRot );
+			angleLeft = Quaternion.Angle( transform.rotation, endRot );
+			
+			yield return null;
 		}
-		
-		return AttemptMove( hor, ver );
 	}
 	
 	private IEnumerator MoveSmoothly( Vector3 endPos )
@@ -146,23 +145,13 @@ public class Mobile : MonoBehaviour
 		
 		// anim.SetInteger( "pace", 1 );
 		
-		Quaternion endRot = Quaternion.LookRotation( endPos - transform.position );
-		
 		float sqrDistanceLeft = ( transform.position - endPos ).sqrMagnitude;
-		float angleLeft = Quaternion.Angle( transform.rotation, endRot );
 		
-		while ( sqrDistanceLeft > float.Epsilon || ( canRotate && angleLeft > float.Epsilon ) )
+		while ( sqrDistanceLeft > float.Epsilon )
 		{
 			Vector3 newPos = Vector3.MoveTowards( rbody.position, endPos, speed * Time.deltaTime );
 			rbody.MovePosition( newPos );
 			sqrDistanceLeft = ( transform.position - endPos ).sqrMagnitude;
-			
-			if ( canRotate )
-			{
-				Quaternion newRot = Quaternion.RotateTowards( rbody.rotation, endRot, speed * 90 * Time.deltaTime );
-				rbody.MoveRotation( newRot );
-				angleLeft = Quaternion.Angle( transform.rotation, endRot );
-			}
 			
 			yield return null;
 		}
@@ -193,4 +182,27 @@ public static class DirectionExtension
 
         return dir;
     }
+	
+	public static Vector3 ToVector( this Mobile.Direction dir )
+	{
+		Vector3 vec = Vector3.zero;
+		
+		switch ( dir )
+		{
+			case Mobile.Direction.Up:
+				vec = Vector3.forward;
+				break;
+			case Mobile.Direction.Down:
+				vec = Vector3.back;
+				break;
+			case Mobile.Direction.Left:
+				vec = Vector3.left;
+				break;
+			case Mobile.Direction.Right:
+				vec = Vector3.right;
+				break;
+		}
+		
+		return vec;
+	}
 }

@@ -28,7 +28,9 @@ public class Player : Mobile
 			    {
 				    if ( hor == 0 || ver == 0 ) // Se il giocatore prova a muoversi contemporaneamente su due assi, l'input viene ignorato.
 				    {
-				    	AttemptMove( hor, ver );
+						Vector3 vec = new Vector3( hor, 0.0f, ver );
+						Rotate( vec );
+				    	AttemptMove( vec );
 				    	gameController.canMove = false; // Il giocatore non può muoversi due volte nello stesso beat.
 				    }
 			    }

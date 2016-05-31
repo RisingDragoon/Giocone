@@ -63,7 +63,6 @@ public class GameController : MonoBehaviour
             {
                 Debug.Log("Vaffanculo.");
             }
-                
         }
 	}
 	
