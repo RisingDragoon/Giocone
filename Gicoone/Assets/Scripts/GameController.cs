@@ -70,7 +70,7 @@ public class GameController : MonoBehaviour
     {
         float halfTolerance = tolerance / 2;
         audioSource.Play(); // Musica.
-
+        //audioSource.loop = true;
         yield return new WaitForSeconds( beat - halfTolerance );
 		
         while ( true )

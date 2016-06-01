@@ -55,25 +55,26 @@ public class Turret : Mobile
 
     public void ExecuteAction()
     {
+        if (circles != null)
+        {
+            for (int i = circles.Count - 1; i >= 0; i--)
+            {
+                if (circles[i] == null)
+                {
+                    circles.RemoveAt(i);
+                }
+                else
+                {
+                    //fa muovere le palle
+                    circles[i].AttemptMove(circles[i].whereToGo);
+                    circles[i].CountBeat();
+                }
+            }
+        }
         switch (turretType)
         {
             case TurretType.Stop:
-                if (circles != null)
-                {
-                    for (int i = circles.Count - 1; i >= 0; i--)
-                    {
-                        if (circles[i] == null)
-                        {
-                            circles.RemoveAt(i);
-                        }
-                        else
-                        {
-                            //fa muovere le palle
-                            circles[i].AttemptMove(turretDirection);
-                            circles[i].CountBeat();
-                        }
-                    }
-                }
+                
                 switch (shotType)
                 {
                     case ShotType.EveryBeat:
@@ -105,15 +106,16 @@ public class Turret : Mobile
                     default:
                         break;
                 }
-                if (indexPathRotating > pathRotating.Length)
+                if (indexPathRotating >= pathRotating.Length)
                 {
                     indexPathRotating = 0;
                 }
                 Rotate(pathRotating[indexPathRotating]);
+                turretDirection = pathRotating[indexPathRotating];
                 indexPathRotating++;
                 break;
             case TurretType.Mobile:
-                IfRotateShot();
+                //IfRotateShot();
                 Move();
                 break;
         }
@@ -173,6 +175,7 @@ public class Turret : Mobile
                 indexPathMoving = pathMoving.Length - 1;
             }
         }        
+        IfRotateShot();
         turretDirection = pathMoving[indexPathMoving];
     }
 
@@ -183,6 +186,7 @@ public class Turret : Mobile
         {
             Projectile circle = circleObj.GetComponent<Projectile>();
             circle.lifeTime = viewDistance;
+            circle.whereToGo = turretDirection;
             circles.Add( circle );
         }
     }
