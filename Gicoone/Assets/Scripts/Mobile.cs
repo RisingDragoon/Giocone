@@ -179,7 +179,6 @@ public static class DirectionExtension
                 dir = Mobile.Direction.Left;
                 break;
         }
-
         return dir;
     }
 	
