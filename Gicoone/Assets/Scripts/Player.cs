@@ -20,32 +20,39 @@ public class Player : Mobile
 		int hor = (int) Input.GetAxisRaw( "Horizontal" );
 		int ver = (int) Input.GetAxisRaw( "Vertical" );
 		
-		if ( hor != 0 || ver != 0 )
+		if ( !Input.GetButton( "Stealth" ) )
 		{
-            if ( !isAxisPressed )
-            {
-			    if ( gameController.canMove && !isMoving )
-			    {
-				    if ( hor == 0 || ver == 0 ) // Se il giocatore prova a muoversi contemporaneamente su due assi, l'input viene ignorato.
-				    {
-						Vector3 vec = new Vector3( hor, 0.0f, ver );
-						Rotate( vec );
-				    	AttemptMove( vec );
-				    	gameController.canMove = false; // Il giocatore non può muoversi due volte nello stesso beat.
-				    }
-			    }
-                else
-                {
-                    LoseLife();
-                }
-            }
-			
-			isAxisPressed = true;
+			if ( hor != 0 || ver != 0 )
+			{
+				if ( !isAxisPressed )
+				{
+					if ( gameController.canMove && !isMoving )
+					{
+						if ( hor == 0 || ver == 0 ) // Se il giocatore prova a muoversi contemporaneamente su due assi, l'input viene ignorato.
+						{
+							Vector3 vec = new Vector3( hor, 0.0f, ver );
+							Rotate( vec );
+							AttemptMove( vec );
+							gameController.canMove = false; // Il giocatore non può muoversi due volte nello stesso beat.
+						}
+					}
+					else
+					{
+						LoseLife();
+					}
+				}
+				
+				isAxisPressed = true;
+			}
+			else
+			{
+				isAxisPressed = false;
+			}
 		}
 		else
-        {
-			isAxisPressed = false;
-        }
+		{
+			// Gestire lo stealth.
+		}
 	}
 
 	public void GainLife()
@@ -56,6 +63,8 @@ public class Player : Mobile
 		}
 
 		Debug.Log( "Il player ha ottenuto una vita. Ora ne ha " + lives + "." );
+		
+		// Gestire la GUI.
 	}
 
     private void LoseLife()

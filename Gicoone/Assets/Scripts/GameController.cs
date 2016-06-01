@@ -31,8 +31,8 @@ public class GameController : MonoBehaviour
 		
 		foreach ( GameObject obj in enemiesObj )
 		{
-			Turret script = obj.GetComponent<Turret>();
-			enemies.Add( script );
+			Turret enemy = obj.GetComponent<Turret>();
+			enemies.Add( enemy );
 		}
 		
         audioSource = GetComponent<AudioSource>();
@@ -81,7 +81,7 @@ public class GameController : MonoBehaviour
 
             foreach ( Turret enemy in enemies )
 			{
-                if ( enemy.active )
+                if ( enemy != null && enemy.active )
                 {
                     enemy.ExecuteAction();
                 }                
