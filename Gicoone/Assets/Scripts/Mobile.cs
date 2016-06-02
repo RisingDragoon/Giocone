@@ -11,11 +11,9 @@ public class Mobile : MonoBehaviour
 		Right
 	};
 	
-	protected bool isMoving;
+	protected bool moving;
 	// protected bool busy;
 	// protected bool paused;
-	
-	protected GameController gameController;
 
     private float speed;
 	
@@ -26,16 +24,10 @@ public class Mobile : MonoBehaviour
 	
 	protected void Start()
 	{
-		isMoving = false;
+		moving = false;
 		
-		GameObject gameControllerObj = GameObject.FindGameObjectWithTag( "GameController" );
-
-        if ( gameControllerObj != null )
-        {
-            gameController = gameControllerObj.GetComponent<GameController>();
-        }
-
-        speed = gameController.bpm / 6.0f;
+		GameController gameController = GameObject.FindGameObjectWithTag( "GameController" ).GetComponent<GameController>();
+		speed = gameController.bpm / 6.0f;
 		
 		rbody = GetComponent<Rigidbody>();
 		// coll = GetComponent<BoxCollider>();
@@ -125,23 +117,9 @@ public class Mobile : MonoBehaviour
 		Rotate( offset );
 	}
 	
-	private IEnumerator RotateSmoothly( Quaternion endRot )
-	{
-		float angleLeft = Quaternion.Angle( transform.rotation, endRot );
-		
-		while ( angleLeft > float.Epsilon )
-		{
-			Quaternion newRot = Quaternion.RotateTowards( rbody.rotation, endRot, speed * 90 * Time.deltaTime );
-			rbody.MoveRotation( newRot );
-			angleLeft = Quaternion.Angle( transform.rotation, endRot );
-			
-			yield return null;
-		}
-	}
-	
 	private IEnumerator MoveSmoothly( Vector3 endPos )
 	{
-		isMoving = true;
+		moving = true;
 		
 		// anim.SetInteger( "pace", 1 );
 		
@@ -156,7 +134,21 @@ public class Mobile : MonoBehaviour
 			yield return null;
 		}
 		
-		isMoving = false;
+		moving = false;
+	}
+	
+	private IEnumerator RotateSmoothly( Quaternion endRot )
+	{
+		float angleLeft = Quaternion.Angle( transform.rotation, endRot );
+		
+		while ( angleLeft > float.Epsilon )
+		{
+			Quaternion newRot = Quaternion.RotateTowards( rbody.rotation, endRot, speed * 90 * Time.deltaTime );
+			rbody.MoveRotation( newRot );
+			angleLeft = Quaternion.Angle( transform.rotation, endRot );
+			
+			yield return null;
+		}
 	}
 }
 

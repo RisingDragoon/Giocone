@@ -6,28 +6,32 @@ public class GameController : MonoBehaviour
 {
     public float bpm;
 	
-	[HideInInspector]
-	public bool canMove;
-	
 	// Queste variabili servono ad interfacciarsi col cubo verde/rosso di debug.
-    public MeshRenderer cubeMesh;
-    public Material red;
-    public Material green;
+    public MeshRenderer mesh_debug;
+    public Material inactive_debug;
+    public Material active_debug;
 	
     private float beat;
     private float tolerance;
+	private Player player;
     private List<Turret> enemies;
 	
     private AudioSource audioSource;
 	
 	void Start()
     {
-        canMove = false;
         beat = 60.0f / bpm;
         tolerance = beat * 0.5f;
-		enemies = new List<Turret>();
 		
-		GameObject[] enemiesObj = GameObject.FindGameObjectsWithTag("Enemy");
+		GameObject playerObj = GameObject.FindGameObjectWithTag( "Player" );
+		
+		if ( playerObj != null )
+        {
+            player = playerObj.GetComponent<Player>();
+        }
+		
+		enemies = new List<Turret>();
+		GameObject[] enemiesObj = GameObject.FindGameObjectsWithTag( "Enemy" );
 		
 		foreach ( GameObject obj in enemiesObj )
 		{
@@ -40,30 +44,13 @@ public class GameController : MonoBehaviour
         StartCoroutine( PlayBeat() );
 	}
 	
-	// Questa funzione serve ad interfacciarsi col cubo verde/rosso di debug.
 	void Update()
     {
-        if ( canMove )
-		{
-            cubeMesh.material = green;
-		}
+		// Interfaccia col cubo di debug.
+        if ( player.canMove )
+            mesh_debug.material = active_debug;
         else
-		{
-            cubeMesh.material = red;
-		}
-		
-        if ( Input.GetButtonDown( "Stealth" ) )
-        {
-            if ( canMove )
-            {
-                Debug.Log("OK!");
-            }
-                
-            else
-            {
-                Debug.Log("Vaffanculo.");
-            }
-        }
+            mesh_debug.material = inactive_debug;
 	}
 	
     private IEnumerator PlayBeat()
@@ -75,8 +62,13 @@ public class GameController : MonoBehaviour
 		
         while ( true )
         {
-            canMove = true;
-            // audioSource.Play(); // Placeholder per la musica.
+            player.canMove = true;
+			
+			if ( player.inStealth )
+			{
+				StartCoroutine( player.StealthSegment( tolerance ) );
+			}
+			
             yield return new WaitForSeconds( halfTolerance );
 
             foreach ( Turret enemy in enemies )
@@ -88,7 +80,7 @@ public class GameController : MonoBehaviour
 			}
 			
             yield return new WaitForSeconds( halfTolerance );			
-            canMove = false;
+            player.canMove = false;
             yield return new WaitForSeconds( beat - tolerance );
         }
     }
