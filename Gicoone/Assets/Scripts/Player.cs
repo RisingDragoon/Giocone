@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class Player : Mobile
 {
     public int maxLives;
+	
+	public Text livesText;
+	public Text stealthText;
 	
 	[HideInInspector]
 	public bool canMove;
@@ -27,6 +31,10 @@ public class Player : Mobile
 
 		axisPressed = false;
         lives = maxLives;
+		
+		UpdateLivesUI();
+		
+		stealthText.text = null;
     }
 
 	void Update()
@@ -87,16 +95,13 @@ public class Player : Mobile
 		{
 			lives++;
 		}
-
-		Debug.Log( "Il player ha ottenuto una vita. Ora ne ha " + lives + "." );
 		
-		// Gestire la GUI.
+		UpdateLivesUI();
 	}
 
     private void LoseLife()
     {
         lives--;
-        Debug.Log( "Il player ha perso una vita. Ne rimangono " + lives + "." );
 		
 		if ( lives == 0 )
 		{
@@ -104,15 +109,41 @@ public class Player : Mobile
 			Debug.Log( "Il player è morto!" );
 		}
 		
-        // Gestire la GUI.
+        UpdateLivesUI();
     }
+	
+	private void UpdateLivesUI()
+	{
+		livesText.text = "Vite: " + lives;
+	}
 	
 	public IEnumerator StealthSegment( float tolerance )
 	{
 		bool safeSegment = false;
 		float startTime = Time.time;
 		Direction toPress = (Direction) Random.Range( 0, 4 );
-		Debug.Log( "Devi premere " + toPress.ToString() );
+		
+		// Debug.
+		string arrowSymbol = "?";
+		
+		switch ( toPress )
+		{
+			case Direction.Up:
+                arrowSymbol = "\u2191";
+                break;
+            case Direction.Down:
+                arrowSymbol = "\u2193";
+                break;
+            case Direction.Left:
+                arrowSymbol = "\u2190";
+                break;
+            case Direction.Right:
+                arrowSymbol = "\u2192";
+                break;
+		}
+		
+		stealthText.text = "Devi premere " + arrowSymbol;
+		// Fine Debug.
 		
 		while ( true )
 		{
@@ -131,6 +162,8 @@ public class Player : Mobile
 						{
 							Debug.Log( "Input corretto." );
 							safeSegment = true;
+							
+							stealthText.text = null; // Debug.
 						}
 						else
 						{
@@ -160,6 +193,8 @@ public class Player : Mobile
 				{
 					Debug.Log( "Nessun input o input errato, termino lo stealth." );
 					inStealth = false;
+					
+					stealthText.text = null; // Debug.
 				}
 				
 				break;
