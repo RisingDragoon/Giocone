@@ -73,7 +73,7 @@ public class GameController : MonoBehaviour
 
             foreach ( Turret enemy in enemies )
 			{
-                if ( enemy != null && enemy.active )
+                if ( enemy != null  )//volendo da mettere se active==true
                 {
                     enemy.ExecuteAction();
                 }                
