@@ -2,22 +2,32 @@
 
 public class AreaTurret : MonoBehaviour
 {
+    private Player player;
+    private Turret father;
+    void Start()
+    {
+        player= GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        father = GetComponentInParent<Turret>();
+    }
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.tag);
-        if (other.tag=="Player")
+        if (player.inStealth)
         {
-            //La torretta si ferma e inizia a sparare
-            Turret father = GetComponentInParent<Turret>();
-            father.seePlayer = true;
+            father.seePlayer = false;
         }
+        else
+        {
+            if (other.tag == "Player")
+            {
+                //La torretta si ferma e inizia a sparare
+                father.seePlayer = true;
+            }
+        }     
     }
     void OnTriggerExit(Collider other)
     {
-        Debug.Log(other.tag);
         if (other.tag == "Player")
         {
-            Turret father = GetComponentInParent<Turret>();
             father.seePlayer = false;
         }
     }

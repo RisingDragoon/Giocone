@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Mobile : MonoBehaviour
 {
-	public enum Direction : byte
+    public enum Direction : byte
 	{
 		Up,
 		Down,

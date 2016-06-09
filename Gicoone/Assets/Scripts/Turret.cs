@@ -118,8 +118,6 @@ public class Turret : Mobile
                 {
                     //sta vedendo il player
                     seenPlayer = true;
-                    //Move();
-                    //turretDirection = pathMoving[indexPathMoving];
                     Shot();
                 }
                 else
