@@ -30,7 +30,7 @@ public class Mobile : MonoBehaviour
 		speed = gameController.bpm / 6.0f;
 		
 		rbody = GetComponent<Rigidbody>();
-		// coll = GetComponent<BoxCollider>();
+		//coll = GetComponent<BoxCollider>();
 		// anim = GetComponent<Animator>();
 
 		blockingLayer = 1 << LayerMask.NameToLayer( "Blocking" );
@@ -42,10 +42,7 @@ public class Mobile : MonoBehaviour
 		Vector3 endPos = startPos + offset;
 
         RaycastHit hit;
-		
-		// coll.enabled = false;
 		bool isBlocked = Physics.Linecast( startPos, endPos, out hit, blockingLayer );
-		// coll.enabled = true;
         
 		if ( !isBlocked || transform.CompareTag( "Projectile" ) )
         {
@@ -121,7 +118,13 @@ public class Mobile : MonoBehaviour
 	{
 		moving = true;
 		
+		GameObject blocker = Instantiate( Resources.Load( "Blocker" ), endPos, Quaternion.identity ) as GameObject;
 		// anim.SetInteger( "pace", 1 );
+		
+		if ( transform.CompareTag( "Projectile" ) )
+		{
+			Destroy( blocker );
+		}
 		
 		float sqrDistanceLeft = ( transform.position - endPos ).sqrMagnitude;
 		
@@ -134,6 +137,7 @@ public class Mobile : MonoBehaviour
 			yield return null;
 		}
 		
+		Destroy( blocker );
 		moving = false;
 	}
 	

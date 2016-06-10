@@ -9,12 +9,11 @@ public class Projectile : Mobile
 
     void OnTriggerEnter( Collider other )
     {
-        Debug.Log(other.gameObject.layer.ToString());
         if ( other.gameObject.layer == 8 )
         {
             if ( other.tag == "Player" )
             {
-                Debug.Log( "Il player deve fre cose" );
+                other.gameObject.GetComponent<Player>().LoseLife();
             }
             Destroy( gameObject );
         }

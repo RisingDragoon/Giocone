@@ -99,7 +99,7 @@ public class Player : Mobile
 		UpdateLivesUI();
 	}
 
-    private void LoseLife()
+    public void LoseLife()
     {
         lives--;
 		
