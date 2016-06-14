@@ -7,7 +7,9 @@ public class Boss : Mobile
     private int contTurns=0;
     private int toDo=-1;
     private List<Projectile> circles;
+    private List<Turret> turrets;
     public GameObject projectile;
+    public GameObject turretBoss;
     public Direction bossDirection = Direction.Down;
     private Transform[] hands;
     private int turnsOfAttack = 0;
@@ -15,7 +17,10 @@ public class Boss : Mobile
     private float diffX = 0;
     private float diffZ = 0;
     private Direction whereToGo;
-    //lista delle torrette del boss
+    public Vector3 verticeInBassoASx;
+    public Vector3 verticeInAltoADx;
+    private int numberOfTurretToCreate = 0;
+    private bool equalizzatore;
     private int stopped;
 
     new void Start()
@@ -28,6 +33,9 @@ public class Boss : Mobile
         }
         hands = GetComponentsInChildren<Transform>();
         circles = new List<Projectile>();
+        numberOfTurretToCreate = (int)((verticeInAltoADx.x - verticeInBassoASx.x + 1));
+        CreaTorretteBoss();
+        RendiInattive();
     }
 
     public void ExecuteAction()
@@ -38,6 +46,7 @@ public class Boss : Mobile
         #region Verifica cosa deve fare e lo fa
         if (toDo != -1)
         {
+            //controlla se sta attaccando
             turnsOfAttack++;
             switch (toDo)
             {
@@ -55,53 +64,160 @@ public class Boss : Mobile
                         toDo = -1;
                         turnsOfAttack = 0;
                         stopped = 12;
+                        RendiInattive();
                     }
                     break;
             }
         }
+        
+        if (stopped > 0)
+        {
+            stopped--;
+        }
         else
         {
-            if (stopped > 0)
+            toDo = WhatToDo();
+            #region Fa cose
+            switch (toDo)
             {
-                stopped--;
+                case 0://attacco dalle mani
+                    Idle();
+                    ShotByHand();
+                    break;
+                case 1://equalizzatore
+                    Idle();
+                    Equalizzatore();
+                    break;
+                case 2://mani in movimento
+                    Mani();
+                    break;
+                case 3://muoversi
+                    #region Movimento ogni 3 turni
+                    if (contTurns == 0)
+                    {
+                        //si muove
+                        AttemptMove(whereToGo);
+                    }
+                    if (contTurns == 3)
+                    {
+                        contTurns = -1;
+                    }
+                    contTurns++;
+                    toDo = -1;
+                    #endregion
+                    break;
             }
-            else
-            {
-                toDo = WhatToDo();
-                #region Fa cose
-                switch (toDo)
-                {
-                    case 0://attacco dalle mani
-                        Idle();
-                        ShotByHand();
-                        break;
-                    case 1://equalizzatore
-                        Idle();
+            #endregion
+        }
+        
+        #endregion  
+    }
 
-                        break;
-                    case 2://mani in movimento
-                        Mani();
-                        break;
-                    case 3://muoversi
-                        #region Movimento ogni 3 turni
-                        if (contTurns == 0)
-                        {
-                            //si muove
-                            AttemptMove(whereToGo);
-                        }
-                        if (contTurns == 3)
-                        {
-                            contTurns = -1;
-                        }
-                        contTurns++;
-                        toDo = -1;
-                        #endregion
-                        break;
-                }
-                #endregion
+    private void Equalizzatore()
+    {
+        RendiAttive(!(Math.Abs(player.position.x%2) < 0.4));
+    }
+
+    private void CreaTorretteBoss()
+    {
+        Vector3 where;
+        #region Down
+        where.x = verticeInBassoASx.x;
+        where.y =  0.75f;
+        where.z = verticeInBassoASx.z - 1;
+        for (int i = 0; i < numberOfTurretToCreate; i++)
+        {
+            GameObject turretObj = Instantiate(turretBoss, where, Quaternion.identity) as GameObject;
+            if (turretObj != null)
+            {
+                Turret turret = turretObj.GetComponent<Turret>();
+                turret.turretDirection = Direction.Up;
+                turret.turretType = Turret.TurretType.Stop;
+                turret.pari = Math.Abs(@where.x % 2) < 0.4;
+                turrets.Add(turret);
+            }
+            where.x += 1;
+        }
+        #endregion
+
+        #region Up
+        where.x = verticeInBassoASx.x;
+        where.y = 0.75f;
+        where.z = verticeInAltoADx.z + 1;
+        for (int i = 0; i < numberOfTurretToCreate; i++)
+        {
+            GameObject turretObj = Instantiate(turretBoss, where, Quaternion.identity) as GameObject;
+            if (turretObj != null)
+            {
+                Turret turret = turretObj.GetComponent<Turret>();
+                turret.turretDirection = Direction.Down;
+                turret.turretType = Turret.TurretType.Stop;
+                turret.pari = Math.Abs(@where.x % 2) < 0.4;
+                turrets.Add(turret);
+            }
+            where.x += 1;
+        }
+        #endregion
+
+        #region Right
+        where.z = verticeInBassoASx.z;
+        where.y = 0.75f;
+        where.x = verticeInAltoADx.x + 1;
+        for (int i = 0; i < numberOfTurretToCreate; i++)
+        {
+            GameObject turretObj = Instantiate(turretBoss, where, Quaternion.identity) as GameObject;
+            if (turretObj != null)
+            {
+                Turret turret = turretObj.GetComponent<Turret>();
+                turret.turretDirection = Direction.Left;
+                turret.turretType = Turret.TurretType.Stop;
+                turret.pari = Math.Abs(@where.x % 2) < 0.4;
+                turrets.Add(turret);
+            }
+            where.z += 1;
+        }
+        #endregion
+
+        #region Left
+        where.z = verticeInBassoASx.z;
+        where.y = 0.75f;
+        where.x = verticeInBassoASx.x - 1;
+        for (int i = 0; i < numberOfTurretToCreate; i++)
+        {
+            GameObject turretObj = Instantiate(turretBoss, where, Quaternion.identity) as GameObject;
+            if (turretObj != null)
+            {
+                Turret turret = turretObj.GetComponent<Turret>();
+                turret.turretDirection = Direction.Right;
+                turret.turretType = Turret.TurretType.Stop;
+                turret.pari = Math.Abs(@where.x % 2) < 0.4;
+                turrets.Add(turret);
+            }
+            where.z += 1;
+        }
+        #endregion
+
+    }
+
+    private void RendiInattive()
+    {
+        foreach (Turret turret in turrets)
+        {
+            turret.gameObject.SetActive(false);
+            turret.shotType=Turret.ShotType.EveryTwoBeat;
+        }
+    }
+
+    private void RendiAttive(bool pari)
+    {
+        Direction turretDir = bossDirection.Invert();
+        foreach (Turret turret in turrets)
+        {
+            if (turret.turretDirection==turretDir && turret.pari == pari)
+            {
+                turret.gameObject.SetActive(true);
             }
         }
-        #endregion  
     }
 
     private int WhatToDo()

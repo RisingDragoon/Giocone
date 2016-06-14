@@ -18,6 +18,7 @@ public class Turret : Mobile
     [HideInInspector]
     public bool seePlayer = false;//da controllare nell'animator
 
+    [HideInInspector] public bool pari;
     public Direction[] pathMoving = new Direction[1];
     public Direction[] pathRotating = new Direction[1];
 	public Direction turretDirection = Direction.Right;
