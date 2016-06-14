@@ -31,7 +31,8 @@ public class Turret : Mobile
 
     public int viewDistance=3;
     //public bool hasAreaActivation;
-
+    public bool usePathRotating;
+    public bool isBossTurret;
     private bool seenPlayer = false;
     private int indexPathMoving = 0;
     private int indexPathRotating = 0;
@@ -40,11 +41,17 @@ public class Turret : Mobile
     private bool temp = false;
     private bool turn = true;
     private List<Projectile> circles;
-
+    //private List<Projectile> bossCircles;
+    public Boss boss;
     new void Start()
     {
 		base.Start();
         circles = new List<Projectile>();
+        GameObject bossObj = GameObject.FindGameObjectWithTag("Boss");
+        if (bossObj != null)
+        {
+            boss = bossObj.GetComponent<Boss>();
+        }
         /*if (hasAreaActivation)
         {
             //active = false;//da controllare nell'animator
@@ -110,9 +117,12 @@ public class Turret : Mobile
                 {
                     indexPathRotating = 0;
                 }
-                Rotate(pathRotating[indexPathRotating]);
-                turretDirection = pathRotating[indexPathRotating];
-                indexPathRotating++;
+                if (usePathRotating)
+                {
+                    Rotate(pathRotating[indexPathRotating]);
+                    turretDirection = pathRotating[indexPathRotating];
+                    indexPathRotating++;
+                }
                 break;
             case TurretType.Mobile:
                 if (seePlayer)
@@ -202,15 +212,30 @@ public class Turret : Mobile
     }
 
     private void Shot()
-    {       
-        GameObject circleObj = Instantiate( projectile, transform.position, Quaternion.identity ) as GameObject;
-        if (circleObj != null)
+    {
+        if (isBossTurret)
         {
-            Projectile circle = circleObj.GetComponent<Projectile>();
-            circle.lifeTime = viewDistance;
-            circle.whereToGo = turretDirection;
-            circles.Add( circle );
+            GameObject circleObj = Instantiate(projectile, transform.position, Quaternion.identity) as GameObject;
+            if (circleObj != null)
+            {
+                Projectile circle = circleObj.GetComponent<Projectile>();
+                circle.lifeTime = viewDistance;
+                circle.whereToGo = turretDirection;
+                boss.bossCircles.Add(circle);                
+            }
         }
+        else
+        {
+            GameObject circleObj = Instantiate(projectile, transform.position, Quaternion.identity) as GameObject;
+            if (circleObj != null)
+            {
+                Projectile circle = circleObj.GetComponent<Projectile>();
+                circle.lifeTime = viewDistance;
+                circle.whereToGo = turretDirection;
+                circles.Add(circle);
+            }
+        }
+        
     }
 
     /*private void IfRotateShot()

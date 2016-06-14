@@ -6,8 +6,10 @@ public class Boss : Mobile
 {
     private int contTurns=0;
     private int toDo=-1;
-    private List<Projectile> circles;
-    private List<Turret> turrets;
+    [HideInInspector]
+    public List<Projectile> bossCircles;
+
+    private List<Turret> bossTurrets;
     public GameObject projectile;
     public GameObject turretBoss;
     public Direction bossDirection = Direction.Down;
@@ -19,9 +21,10 @@ public class Boss : Mobile
     private Direction whereToGo;
     public Vector3 verticeInBassoASx;
     public Vector3 verticeInAltoADx;
-    private int numberOfTurretToCreate = 0;
+    private int numberOfTurretToCreateHor = 0;
+    private int numberOfTurretToCreateVer = 0;
     private bool equalizzatore;
-    private int stopped;
+    private int stopped=-1;
 
     new void Start()
     {
@@ -32,21 +35,44 @@ public class Boss : Mobile
             player = playerObj.GetComponent<Transform>();
         }
         hands = GetComponentsInChildren<Transform>();
-        circles = new List<Projectile>();
-        numberOfTurretToCreate = (int)((verticeInAltoADx.x - verticeInBassoASx.x + 1));
+        bossCircles = new List<Projectile>();
+        bossTurrets = new List<Turret>();
+        numberOfTurretToCreateHor += (int)((verticeInAltoADx.x - verticeInBassoASx.x + 1));
+        numberOfTurretToCreateVer += (int)((verticeInAltoADx.z - verticeInBassoASx.z + 1));
         CreaTorretteBoss();
         RendiInattive();
     }
 
     public void ExecuteAction()
-    {
+    {   
         diffX = transform.position.x - player.position.x;
         diffZ = transform.position.z - player.position.z;
-
-        #region Verifica cosa deve fare e lo fa
-        if (toDo != -1)
+        foreach (Turret turret in bossTurrets)
         {
-            //controlla se sta attaccando
+            if (turret.isActiveAndEnabled)
+            {
+                turret.ExecuteAction();
+            }
+        }
+        if (bossCircles != null)
+        {
+            for (int i = bossCircles.Count - 1; i >= 0; i--)
+            {
+                if (bossCircles[i] == null)
+                {
+                    bossCircles.RemoveAt(i);
+                }
+                else
+                {
+                    //fa muovere le palle
+                    bossCircles[i].AttemptMove(bossCircles[i].whereToGo);
+                }
+            }
+        }
+        #region Verifica cosa deve fare e lo fa
+        if (toDo == 0 || toDo==1)
+        {
+            //controlla se sta attaccando            
             turnsOfAttack++;
             switch (toDo)
             {
@@ -63,20 +89,27 @@ public class Boss : Mobile
                     {
                         toDo = -1;
                         turnsOfAttack = 0;
-                        stopped = 12;
-                        RendiInattive();
+                        stopped = 12;  
+                        RendiInattive();                      
                     }
                     break;
             }
         }
-        
-        if (stopped > 0)
+        if (stopped >= 0)
         {
+            Debug.Log("Stopped");
+            Mani();
             stopped--;
         }
         else
         {
-            toDo = WhatToDo();
+            Debug.Log("Non Stopped");
+            RendiInattive();
+            if (toDo==-1)
+            {
+                toDo = WhatToDo();
+            }
+            //Debug.Log(toDo.ToString());
             #region Fa cose
             switch (toDo)
             {
@@ -88,15 +121,21 @@ public class Boss : Mobile
                     Idle();
                     Equalizzatore();
                     break;
-                case 2://mani in movimento
-                    Mani();
-                    break;
+                //case 2://mani in movimento
+                    //Mani();
+                    //break;
                 case 3://muoversi
+                    WhereToGo();
                     #region Movimento ogni 3 turni
                     if (contTurns == 0)
                     {
                         //si muove
                         AttemptMove(whereToGo);
+                        if (bossDirection!=whereToGo)
+                        {
+                            Rotate(whereToGo.Invert());
+                        }
+                        bossDirection = whereToGo;
                     }
                     if (contTurns == 3)
                     {
@@ -115,7 +154,14 @@ public class Boss : Mobile
 
     private void Equalizzatore()
     {
-        RendiAttive(!(Math.Abs(player.position.x%2) < 0.4));
+        if (bossDirection==Direction.Down || bossDirection == Direction.Up)
+        {
+            RendiAttive(!(Math.Abs(player.position.x % 2) < 0.4));
+        }
+        else
+        {
+            RendiAttive(!(Math.Abs(player.position.z % 2) < 0.4));
+        }
     }
 
     private void CreaTorretteBoss()
@@ -123,9 +169,10 @@ public class Boss : Mobile
         Vector3 where;
         #region Down
         where.x = verticeInBassoASx.x;
+        bool resto = true;
         where.y =  0.75f;
         where.z = verticeInBassoASx.z - 1;
-        for (int i = 0; i < numberOfTurretToCreate; i++)
+        for (int i = 0; i < numberOfTurretToCreateHor; i++)
         {
             GameObject turretObj = Instantiate(turretBoss, where, Quaternion.identity) as GameObject;
             if (turretObj != null)
@@ -133,8 +180,29 @@ public class Boss : Mobile
                 Turret turret = turretObj.GetComponent<Turret>();
                 turret.turretDirection = Direction.Up;
                 turret.turretType = Turret.TurretType.Stop;
-                turret.pari = Math.Abs(@where.x % 2) < 0.4;
-                turrets.Add(turret);
+                turret.shotType = Turret.ShotType.EveryTwoBeat;
+                turret.viewDistance = 15;
+                turret.isBossTurret = true;
+                turret.pari =resto;
+                resto = !resto;
+                /*float resto = where.x%2;
+                
+                if (resto==0.5)
+                {
+                    resto++;
+                }
+
+                if (resto<0)
+                {
+                    turret.pari = Math.Abs(resto) < 0.6;
+                }
+                else
+                {
+                    turret.pari = !(Math.Abs(resto) > 0.6);
+                }*/
+                //turret.pari = Math.Abs(resto) < 0.6;
+
+                bossTurrets.Add(turret);
             }
             where.x += 1;
         }
@@ -144,7 +212,7 @@ public class Boss : Mobile
         where.x = verticeInBassoASx.x;
         where.y = 0.75f;
         where.z = verticeInAltoADx.z + 1;
-        for (int i = 0; i < numberOfTurretToCreate; i++)
+        for (int i = 0; i < numberOfTurretToCreateHor; i++)
         {
             GameObject turretObj = Instantiate(turretBoss, where, Quaternion.identity) as GameObject;
             if (turretObj != null)
@@ -152,8 +220,12 @@ public class Boss : Mobile
                 Turret turret = turretObj.GetComponent<Turret>();
                 turret.turretDirection = Direction.Down;
                 turret.turretType = Turret.TurretType.Stop;
-                turret.pari = Math.Abs(@where.x % 2) < 0.4;
-                turrets.Add(turret);
+                //turret.pari = Math.Abs(where.x % 2) < 0.4;
+                turret.viewDistance = 15;
+                turret.isBossTurret = true;
+                turret.pari = resto;
+                resto = !resto;
+                bossTurrets.Add(turret);
             }
             where.x += 1;
         }
@@ -163,7 +235,7 @@ public class Boss : Mobile
         where.z = verticeInBassoASx.z;
         where.y = 0.75f;
         where.x = verticeInAltoADx.x + 1;
-        for (int i = 0; i < numberOfTurretToCreate; i++)
+        for (int i = 0; i < numberOfTurretToCreateVer; i++)
         {
             GameObject turretObj = Instantiate(turretBoss, where, Quaternion.identity) as GameObject;
             if (turretObj != null)
@@ -171,8 +243,12 @@ public class Boss : Mobile
                 Turret turret = turretObj.GetComponent<Turret>();
                 turret.turretDirection = Direction.Left;
                 turret.turretType = Turret.TurretType.Stop;
-                turret.pari = Math.Abs(@where.x % 2) < 0.4;
-                turrets.Add(turret);
+                //turret.pari = Math.Abs(where.z % 2) < 0.4;
+                turret.isBossTurret = true;
+                turret.viewDistance = 15;
+                turret.pari = resto;
+                resto = !resto;
+                bossTurrets.Add(turret);
             }
             where.z += 1;
         }
@@ -182,7 +258,7 @@ public class Boss : Mobile
         where.z = verticeInBassoASx.z;
         where.y = 0.75f;
         where.x = verticeInBassoASx.x - 1;
-        for (int i = 0; i < numberOfTurretToCreate; i++)
+        for (int i = 0; i < numberOfTurretToCreateVer; i++)
         {
             GameObject turretObj = Instantiate(turretBoss, where, Quaternion.identity) as GameObject;
             if (turretObj != null)
@@ -190,8 +266,12 @@ public class Boss : Mobile
                 Turret turret = turretObj.GetComponent<Turret>();
                 turret.turretDirection = Direction.Right;
                 turret.turretType = Turret.TurretType.Stop;
-                turret.pari = Math.Abs(@where.x % 2) < 0.4;
-                turrets.Add(turret);
+                //turret.pari = Math.Abs(where.z % 2) < 0.4;
+                turret.isBossTurret = true;
+                turret.viewDistance = 15;
+                turret.pari = resto;
+                resto = !resto;
+                bossTurrets.Add(turret);
             }
             where.z += 1;
         }
@@ -201,7 +281,7 @@ public class Boss : Mobile
 
     private void RendiInattive()
     {
-        foreach (Turret turret in turrets)
+        foreach (Turret turret in bossTurrets)
         {
             turret.gameObject.SetActive(false);
             turret.shotType=Turret.ShotType.EveryTwoBeat;
@@ -211,11 +291,15 @@ public class Boss : Mobile
     private void RendiAttive(bool pari)
     {
         Direction turretDir = bossDirection.Invert();
-        foreach (Turret turret in turrets)
+        foreach (Turret turret in bossTurrets)
         {
             if (turret.turretDirection==turretDir && turret.pari == pari)
             {
                 turret.gameObject.SetActive(true);
+            }
+            else
+            {
+                turret.gameObject.SetActive(false);
             }
         }
     }
@@ -227,113 +311,101 @@ public class Boss : Mobile
         {
                 case Direction.Down:
                     #region Down
-                    if (diffX < 2)
-                        {
-                            //nella colonna del boss
-                            //movimento mani
-                            temp = 2;
-                        }
-                        if (diffZ > 4 && diffZ < 8)
-                        {
-                            //lontano da 4 a 8 unità
-                            //equalizzatore
-                            temp = 1;
-                        }
-                        if (diffZ <= 4 && Math.Abs(diffX) < 2)
-                        {
-                            //lontano meno di 4 unità e nelle tre colonne del boss
-                            //attacco con le mani
-                            temp = 0;
-                        }
-                        else
-                        {
-                            //si dovrà vuovere
-                            temp = 3;
-                            WhereToGo();
-                        }
-                    #endregion
-                break;
-                case Direction.Up:
-                    #region Up
-                if (diffX < 2)
-                    {
-                        //nella colonna del boss
-                        //movimento mani
-                        temp = 2;
-                    }
-                    if (diffZ < -4 && diffZ > -8)
+                    if (diffZ > 4 && diffZ < 8)
                     {
                         //lontano da 4 a 8 unità
                         //equalizzatore
+                        Debug.Log("Equalizzatore");
                         temp = 1;
                     }
-                    if (diffZ >= -4 && Math.Abs(diffX) > -2)
+                    else if (diffZ <= 4 && diffZ>1 && Math.Abs(diffX) < 1)
                     {
                         //lontano meno di 4 unità e nelle tre colonne del boss
                         //attacco con le mani
+                        Debug.Log("Attacco mani");
                         temp = 0;
                     }
                     else
                     {
                         //si dovrà vuovere
                         temp = 3;
-                        WhereToGo();
+                        Debug.Log("Movimento");
+                    
+                    }
+                    #endregion
+                break;
+                case Direction.Up:
+                    #region Up
+                    if (diffZ < -4 && diffZ > -8)
+                    {
+                        //lontano da 4 a 8 unità
+                        Debug.Log("Equalizzatore");
+                    //equalizzatore
+                    temp = 1;
+                    }
+                    else if (diffZ >= -4 && diffZ<-1 && Math.Abs(diffX) > -1)
+                    {
+                        //lontano meno di 4 unità e nelle tre colonne del boss
+                        //attacco con le mani
+                        Debug.Log("Attacco mani");
+                        temp = 0;
+                    }
+                    else
+                    {
+                        //si dovrà vuovere
+                        temp = 3;
+                        Debug.Log("Movimento");
+                    
                     }
                 #endregion
                 break;
                 case Direction.Right:
                     #region Right
-                if (diffZ < 1)
-                    {
-                        //nella colonna del boss
-                        //movimento mani
-                        temp = 2;
-                    }
                     if (diffX > 4 && diffX < 8)
                     {
                         //lontano da 4 a 8 unità
                         //equalizzatore
+                        Debug.Log("Equalizzatore");
                         temp = 1;
                     }
-                    if (diffX <= 4 && Math.Abs(diffZ) < 2)
+                    else if (diffX <= 4 && diffX > 1 && Math.Abs(diffZ) < 1)
                     {
                         //lontano meno di 4 unità e nelle tre colonne del boss
                         //attacco con le mani
+                        Debug.Log("Attacco mani");
                         temp = 0;
                     }
                     else
                     {
                         //si dovrà vuovere
                         temp = 3;
-                        WhereToGo();
+                        Debug.Log("Movimento");
+                    
                     }
                 #endregion
                 break;
                 case Direction.Left:
                     #region Left
-                if (diffZ < 1)
-                    {
-                        //nella colonna del boss
-                        //movimento mani
-                        temp = 2;
-                    }
                     if (diffX < -4 && diffX > -8)
                     {
-                        //lontano da 4 a 8 unità
-                        //equalizzatore
-                        temp = 1;
+                        Debug.Log("Equalizzatore");
+                    //lontano da 4 a 8 unità
+                    //equalizzatore
+                    temp = 1;
                     }
-                    if (diffX >= -4 && Math.Abs(diffZ) > -2)
+                    else if (diffX >= -4 && diffX < 1 && Math.Abs(diffZ) > -1)
                     {
                         //lontano meno di 4 unità e nelle tre colonne del boss
                         //attacco con le mani
+                        Debug.Log("Attacco mani");
                         temp = 0;
                     }
                     else
                     {
                         //si dovrà vuovere
                         temp = 3;
-                        WhereToGo();
+                        Debug.Log("Movimento");
+                    
                     }
                 #endregion
                 break;
@@ -360,11 +432,11 @@ public class Boss : Mobile
             //si muove sulla z
             if (diffZ > 0)
             {
-                whereToGo = Direction.Up;
+                whereToGo = Direction.Down;
             }
             else
             {
-                whereToGo = Direction.Down;
+                whereToGo = Direction.Up;
             }
         }
     }
@@ -378,7 +450,7 @@ public class Boss : Mobile
             {
                 Projectile circle = circleObj.GetComponent<Projectile>();
                 circle.whereToGo = bossDirection;
-                circles.Add(circle);
+                bossCircles.Add(circle);
             }
         }        
     }
