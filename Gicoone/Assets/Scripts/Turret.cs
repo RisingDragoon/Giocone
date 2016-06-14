@@ -25,7 +25,7 @@ public class Turret : Mobile
     public TurretType turretType;//ferma o mobile
     public ShotType shotType;
 
-    public GameObject circlePref;//ciò che deve sparare la torretta ferma
+    public GameObject projectile;//ciò che deve sparare la torretta
     //public GameObject visibilityTurret;
 
     public int viewDistance=3;
@@ -202,7 +202,7 @@ public class Turret : Mobile
 
     private void Shot()
     {       
-        GameObject circleObj = Instantiate( circlePref, transform.position, Quaternion.identity ) as GameObject;
+        GameObject circleObj = Instantiate( projectile, transform.position, Quaternion.identity ) as GameObject;
         if (circleObj != null)
         {
             Projectile circle = circleObj.GetComponent<Projectile>();
@@ -212,13 +212,13 @@ public class Turret : Mobile
         }
     }
 
-    private void IfRotateShot()
+    /*private void IfRotateShot()
     {
         if (turretDirection != pathMoving[indexPathMoving])
         {
             Shot();
         }
-    }
+    }*/
 
     private void ControlIndex()
     {
