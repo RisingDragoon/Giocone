@@ -13,14 +13,14 @@ public class AreaTurret : MonoBehaviour
     {
         if (player.inStealth)
         {
-            father.seePlayer = false;
+            father.SeePlayer = false;
         }
         else
         {
             if (other.tag == "Player")
             {
                 //La torretta si ferma e inizia a sparare
-                father.seePlayer = true;
+                father.SeePlayer = true;
             }
         }     
     }
@@ -28,7 +28,7 @@ public class AreaTurret : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            father.seePlayer = false;
+            father.SeePlayer = false;
         }
     }
 }
