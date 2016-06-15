@@ -70,13 +70,21 @@ public class Boss : Mobile
             }
         }
         #region Verifica cosa deve fare e lo fa
-        if (toDo == 0 || toDo==1)
+        if (stopped >= 0)
         {
-            //controlla se sta attaccando            
+            Debug.Log("Stopped");
+            Mani();
+            stopped--;
+        }
+        //controlla se sta attaccando        
+        else if (toDo == 0 || toDo==1)
+        {
             turnsOfAttack++;
+            Debug.Log("Sta attaccando con l'equalizzatore o con le mani");
             switch (toDo)
             {
                 case 0:
+                    ShotByHand();
                     if (turnsOfAttack == 6)
                     {
                         toDo = -1;
@@ -85,6 +93,7 @@ public class Boss : Mobile
                     }
                     break;
                 case 1:
+                    Equalizzatore();
                     if (turnsOfAttack == 10)
                     {
                         toDo = -1;
@@ -95,21 +104,16 @@ public class Boss : Mobile
                     break;
             }
         }
-        if (stopped >= 0)
-        {
-            Debug.Log("Stopped");
-            Mani();
-            stopped--;
-        }
+        //fermo?
         else
         {
+            //deve fare cose
             Debug.Log("Non Stopped");
-            RendiInattive();
+            //RendiInattive();
             if (toDo==-1)
             {
                 toDo = WhatToDo();
             }
-            //Debug.Log(toDo.ToString());
             #region Fa cose
             switch (toDo)
             {
@@ -156,11 +160,12 @@ public class Boss : Mobile
     {
         if (bossDirection==Direction.Down || bossDirection == Direction.Up)
         {
-            RendiAttive(!(Math.Abs(player.position.x % 2) < 0.4));
+            RendiAttive(Math.Abs(player.position.x % 2) < 0.6);
         }
         else
         {
-            RendiAttive(!(Math.Abs(player.position.z % 2) < 0.4));
+            //float rest = Math.Abs(player.position.z%2);
+            RendiAttive(Math.Abs(player.position.z % 2) < 0.6);
         }
     }
 
@@ -361,14 +366,14 @@ public class Boss : Mobile
                 break;
                 case Direction.Right:
                     #region Right
-                    if (diffX > 4 && diffX < 8)
+                    if (diffX < -4 && diffX > -8)
                     {
                         //lontano da 4 a 8 unità
                         //equalizzatore
                         Debug.Log("Equalizzatore");
                         temp = 1;
                     }
-                    else if (diffX <= 4 && diffX > 1 && Math.Abs(diffZ) < 1)
+                    else if (diffX >= -4 && diffX < -1 && Math.Abs(diffZ) < 1)
                     {
                         //lontano meno di 4 unità e nelle tre colonne del boss
                         //attacco con le mani
@@ -393,7 +398,7 @@ public class Boss : Mobile
                     //equalizzatore
                     temp = 1;
                     }
-                    else if (diffX >= -4 && diffX < 1 && Math.Abs(diffZ) > -1)
+                    else if (diffX >= -4 && diffX < -1 && Math.Abs(diffZ) > 1)
                     {
                         //lontano meno di 4 unità e nelle tre colonne del boss
                         //attacco con le mani
