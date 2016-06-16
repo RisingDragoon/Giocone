@@ -1,16 +1,23 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Mobile.cs">
     <Files>
-      <File FileName="Assets\Scripts\Turret.cs" Line="16" Column="8" />
+      <File FileName="Assets\Scripts\Boss.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Turret.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\GameController.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Mobile.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Mover.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Mobile.cs" Line="157" Column="6" />
       <File FileName="Assets\Scripts\Player.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Projectile.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="C:\Users\NB-KEVIN\Desktop\ProgettoSerio\Gicoone\Assets\Scripts\Mobile.cs" line="35" column="1" />
+      <Breakpoint traceExpression="{rbody}" file="C:\Users\NB-KEVIN\Desktop\ProgettoSerio\Gicoone\Assets\Scripts\Mobile.cs" line="33" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
+    <Watch file="Assets\Scripts\Mobile.cs" line="33" offsetX="303" offsetY="509" expression="rbody" liveUpdate="True" />
+    <Watch file="Assets\Scripts\Mobile.cs" line="138" offsetX="781" offsetY="2190" expression="rbody" liveUpdate="False" />
+  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
 </Properties>

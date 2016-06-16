@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-[RequireComponent(typeof(Rigidbody))]
+//[RequireComponent(typeof(Rigidbody))]
 public class Mobile : MonoBehaviour
 {
     public enum Direction : byte
@@ -17,7 +17,7 @@ public class Mobile : MonoBehaviour
 
     private float speed;
 	
-	public Rigidbody rbody;
+	private Rigidbody rbody;
 	// private BoxCollider coll;
 	// private Animator anim;
 	protected LayerMask blockingLayer;
@@ -30,7 +30,11 @@ public class Mobile : MonoBehaviour
 		speed = gameController.bpm / 6.0f;
 		
 		rbody = GetComponent<Rigidbody>();
-        Debug.Log("Start mobile");
+	    if (rbody == null)
+	    {
+            Debug.Log("rbody = null");
+        }
+        
 		//coll = GetComponent<BoxCollider>();
 		// anim = GetComponent<Animator>();
 
@@ -121,17 +125,18 @@ public class Mobile : MonoBehaviour
 		
 		GameObject blocker = Instantiate( Resources.Load( "Blocker" ), endPos, Quaternion.identity ) as GameObject;
 		// anim.SetInteger( "pace", 1 );
-		
+
 		if ( transform.CompareTag( "Projectile" ) )
 		{
 			Destroy( blocker );
 		}
-		
+
 		float sqrDistanceLeft = ( transform.position - endPos ).sqrMagnitude;
-		
+		rbody = GetComponent<Rigidbody>();
 		while ( sqrDistanceLeft > float.Epsilon )
 		{
-			Vector3 newPos = Vector3.MoveTowards( rbody.position, endPos, speed * Time.deltaTime );
+			
+			Vector3 newPos = Vector3.MoveTowards(rbody.position, endPos, speed * Time.deltaTime );
 			rbody.MovePosition( newPos );
 			sqrDistanceLeft = ( transform.position - endPos ).sqrMagnitude;
 			
@@ -149,7 +154,7 @@ public class Mobile : MonoBehaviour
 		while ( angleLeft > float.Epsilon )
 		{
 			Quaternion newRot = Quaternion.RotateTowards( rbody.rotation, endRot, speed * 90 * Time.deltaTime );
-			rbody.MoveRotation( newRot );
+			//rbody.MoveRotation( newRot );
 			angleLeft = Quaternion.Angle( transform.rotation, endRot );
 			
 			yield return null;
