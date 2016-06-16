@@ -19,16 +19,18 @@ public class Turret : Mobile
     public bool SeePlayer = false;
     [HideInInspector]
     public bool Even;
+    [HideInInspector]
+    public bool IsBossTurret;
+
 
     public bool UsePathRotating;
-    public bool IsBossTurret;
-    public readonly Direction[] PathMoving = new Direction[1];
-    public readonly Direction[] PathRotating = new Direction[1];
+    public  Direction[] PathMoving = new Direction[1];
+    public  Direction[] PathRotating = new Direction[1];
 	public Direction TurretDirection = Direction.Right;
     public TurretType turretType;//ferma o mobile
     public ShotType shotType;
     public GameObject Projectile;//ciò che deve sparare la torretta
-    public Boss BossScript;
+
     public int ViewDistance=3;
 
     private bool _seenPlayer;
@@ -39,7 +41,8 @@ public class Turret : Mobile
     private bool _temp;
     private bool _turn = true;
     private List<Projectile> _circles;
-    
+    private Boss BossScript;
+
     new void Start()
     {
 		base.Start();
