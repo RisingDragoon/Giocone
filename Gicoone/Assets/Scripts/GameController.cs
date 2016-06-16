@@ -60,7 +60,7 @@ public class GameController : MonoBehaviour
     {
 		float currentTime = ( startTime + Time.time ) % beat;
 		
-		if ( !beatPlaying && currentTime - tolerance > float.Epsilon )
+		if ( !beatPlaying && currentTime + tolerance >= beat )
 		{
 			StartCoroutine( PlayBeat() );
 		}

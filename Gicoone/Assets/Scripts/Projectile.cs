@@ -15,11 +15,11 @@ public class Projectile : Mobile
             {
                 other.gameObject.GetComponent<Player>().LoseLife();
             }
-            if (other.tag!="Boss")
+			
+            if ( other.tag!="Boss" )
             {
-                Destroy(gameObject);
+                Destroy( gameObject );
             }
-            
         }
     }
     public void CountBeat()

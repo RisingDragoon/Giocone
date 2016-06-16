@@ -34,7 +34,7 @@ public class Player : Mobile
 		
 		UpdateLivesUI();
 		
-		//stealthText.text = null;
+		stealthText.text = null;
     }
 
 	void Update()
@@ -114,7 +114,7 @@ public class Player : Mobile
 	
 	private void UpdateLivesUI()
 	{
-		//livesText.text = "Vite: " + lives;
+		livesText.text = "Vite: " + lives;
 	}
 	
 	public IEnumerator StealthSegment( float tolerance )
