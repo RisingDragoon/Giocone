@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+[RequireComponent(typeof(Rigidbody))]
 public class Mobile : MonoBehaviour
 {
     public enum Direction : byte
@@ -17,7 +17,7 @@ public class Mobile : MonoBehaviour
 
     private float speed;
 	
-	private Rigidbody rbody;
+	public Rigidbody rbody;
 	// private BoxCollider coll;
 	// private Animator anim;
 	protected LayerMask blockingLayer;
@@ -30,6 +30,7 @@ public class Mobile : MonoBehaviour
 		speed = gameController.bpm / 6.0f;
 		
 		rbody = GetComponent<Rigidbody>();
+        Debug.Log("Start mobile");
 		//coll = GetComponent<BoxCollider>();
 		// anim = GetComponent<Animator>();
 
