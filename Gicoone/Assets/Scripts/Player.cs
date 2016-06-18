@@ -6,18 +6,13 @@ public class Player : Mobile
 {
     public int maxLives;
 	
-	public Text livesText;
+	public Slider livesUI;
 	public Text stealthText;
 	
 	[HideInInspector]
 	public bool canMove;
 	[HideInInspector]
 	public bool inStealth;
-	
-	// Queste variabili servono al debug dello stealth.
-    public MeshRenderer mesh_debug;
-    public Material inactive_debug;
-    public Material active_debug;
 	
 	private bool axisPressed; // Il giocatore sta tenendo premuti i tasti di movimento?
     private int lives;
@@ -48,12 +43,6 @@ public class Player : Mobile
 		{
 			inStealth = false;
 		}
-		
-		// Interfaccia con il debug dello stealth.
-		if ( inStealth )
-			mesh_debug.material = active_debug;
-		else
-			mesh_debug.material = inactive_debug;
 		
 		if ( !inStealth )
 		{
@@ -114,7 +103,7 @@ public class Player : Mobile
 	
 	private void UpdateLivesUI()
 	{
-		livesText.text = "Vite: " + lives;
+		livesUI.value = lives;
 	}
 	
 	public IEnumerator StealthSegment( float tolerance )

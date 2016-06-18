@@ -11,11 +11,15 @@ public class Projectile : Mobile
     {
         if ( other.gameObject.layer == 8 )
         {
-            if ( other.tag == "Player" )
+            if ( other.CompareTag( "Player" ) )
             {
                 other.gameObject.GetComponent<Player>().LoseLife();
             }
-            Destroy( gameObject );
+			
+            if ( !other.CompareTag( "Boss" ) && !other.CompareTag( "Blocker" ) )
+            {
+                Destroy( gameObject );
+            }
         }
     }
     public void CountBeat()

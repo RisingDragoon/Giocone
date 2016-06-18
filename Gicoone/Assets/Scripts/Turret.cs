@@ -16,60 +16,59 @@ public class Turret : Mobile
     };
     
     [HideInInspector]
-    public bool seePlayer = false;//da controllare nell'animator
+    public bool SeePlayer = false;
+    [HideInInspector]
+    public bool Even;
+    [HideInInspector]
+    public bool IsBossTurret;
 
-    public Direction[] pathMoving = new Direction[1];
-    public Direction[] pathRotating = new Direction[1];
-	public Direction turretDirection = Direction.Right;
 
+    public bool UsePathRotating;
+    public  Direction[] PathMoving = new Direction[1];
+    public  Direction[] PathRotating = new Direction[1];
+	public Direction TurretDirection = Direction.Right;
     public TurretType turretType;//ferma o mobile
     public ShotType shotType;
+    public GameObject Projectile;//ciò che deve sparare la torretta
 
-    public GameObject circlePref;//ciò che deve sparare la torretta ferma
-    //public GameObject visibilityTurret;
+    public int ViewDistance=3;
 
-    public int viewDistance=3;
-    //public bool hasAreaActivation;
-
-    private bool seenPlayer = false;
-    private int indexPathMoving = 0;
-    private int indexPathRotating = 0;
-    private int cont = 0;
-    private bool inverse = false;
-    private bool temp = false;
-    private bool turn = true;
-    private List<Projectile> circles;
+    private bool _seenPlayer;
+    private int _indexPathMoving;
+    private int _indexPathRotating;
+    private int _cont;
+    private bool _inverse;
+    private bool _temp;
+    private bool _turn = true;
+    private List<Projectile> _circles;
+    private Boss BossScript;
 
     new void Start()
     {
 		base.Start();
-        circles = new List<Projectile>();
-        /*if (hasAreaActivation)
+        _circles = new List<Projectile>();
+        GameObject bossObj = GameObject.FindGameObjectWithTag("Boss");
+        if (bossObj != null)
         {
-            //active = false;//da controllare nell'animator
-            Vector3 visibilityPos = transform.position;
-            visibilityPos.y -= 1;
-            GameObject area = Instantiate(visibilityTurret, visibilityPos, Quaternion.identity) as GameObject;
-            area.transform.parent = transform;
-            //area.transform.localScale.x = 1 + 2 * viewDistance;
-        }*/
+            BossScript = bossObj.GetComponent<Boss>();
+        }
     }
 
     public void ExecuteAction()
     {
-        if (circles != null)
+        if (_circles != null)
         {
-            for (int i = circles.Count - 1; i >= 0; i--)
+            for (int i = _circles.Count - 1; i >= 0; i--)
             {
-                if (circles[i] == null)
+                if (_circles[i] == null)
                 {
-                    circles.RemoveAt(i);
+                    _circles.RemoveAt(i);
                 }
                 else
                 {
                     //fa muovere le palle
-                    circles[i].AttemptMove(circles[i].whereToGo);
-                    circles[i].CountBeat();
+                    _circles[i].AttemptMove(_circles[i].whereToGo);
+                    _circles[i].CountBeat();
                 }
             }
         }
@@ -82,21 +81,21 @@ public class Turret : Mobile
                         Shot();
                         break;
                     case ShotType.EveryTwoBeat:
-                        if (turn)
+                        if (_turn)
                         {
                             Shot();
-                            turn = !turn;
+                            _turn = !_turn;
                             return;
                         }
-                        turn = !turn;
+                        _turn = !_turn;
                         break;
                     case ShotType.FiveStop:
-                        cont++;
-                        if (cont > 5)
+                        _cont++;
+                        if (_cont > 5)
                         {
-                            if (cont == 8)
+                            if (_cont == 8)
                             {
-                                cont = 0;
+                                _cont = 0;
                             }
                         }
                         else
@@ -105,132 +104,126 @@ public class Turret : Mobile
                         }
                         break;
                 }
-                if (indexPathRotating >= pathRotating.Length)
+                if (_indexPathRotating >= PathRotating.Length)
                 {
-                    indexPathRotating = 0;
+                    _indexPathRotating = 0;
                 }
-                Rotate(pathRotating[indexPathRotating]);
-                turretDirection = pathRotating[indexPathRotating];
-                indexPathRotating++;
+                if (UsePathRotating)
+                {
+                    Rotate(PathRotating[_indexPathRotating]);
+                    TurretDirection = PathRotating[_indexPathRotating];
+                    _indexPathRotating++;
+                }
                 break;
             case TurretType.Mobile:
-                if (seePlayer)
+                if (SeePlayer)
                 {
                     //sta vedendo il player
-                    seenPlayer = true;
+                    _seenPlayer = true;
                     Shot();
                 }
                 else
                 {
                     //non sta vedendo il player
-                    if (seenPlayer)
+                    if (_seenPlayer)
                     {
                         //l'ha visto ma non lo sta più vedendo
-                        inverse = !inverse;
-                        if (inverse)
+                        _inverse = !_inverse;
+                        if (_inverse)
                         {
-                            indexPathMoving--;
+                            _indexPathMoving--;
                         }
                         else
                         {
-                            indexPathMoving++;
+                            _indexPathMoving++;
                         }
                         ControlIndex();
-                        seenPlayer = false;
-                    }                    
+                        _seenPlayer = false;
+                    }
                     Move();
                 }
                 break;
         }
-
     }
+
     private void Move()
     {
         //Debug.Log(indexPath);
-        if (inverse)
+        TurretDirection = _inverse ? PathMoving[_indexPathMoving].Invert() : PathMoving[_indexPathMoving];
+        if (_inverse)
         {
-            turretDirection = pathMoving[indexPathMoving].Invert();
-        }
-        else
-        {
-            turretDirection = pathMoving[indexPathMoving];
-        }
-        
-        if ( inverse )
-        {
-            Direction newDirection = pathMoving[indexPathMoving].Invert();
-            
-            temp = AttemptMove(newDirection);
+            Direction newDirection = PathMoving[_indexPathMoving].Invert();
+            _temp = AttemptMove(newDirection);
             Rotate(newDirection);
         }
         else
         {
-            temp = AttemptMove(pathMoving[indexPathMoving]);
-            Rotate(pathMoving[indexPathMoving]);
+            _temp = AttemptMove(PathMoving[_indexPathMoving]);
+            Rotate(PathMoving[_indexPathMoving]);
         }
-        if (temp)
+        if (_temp)
         {
-            if (!inverse)//normale
+            if (!_inverse) //normale
             {
-                indexPathMoving++;
+                _indexPathMoving++;
             }
-            else//inverso
+            else //inverso
             {
-                indexPathMoving--;
+                _indexPathMoving--;
             }
         }
-        if (temp == inverse)
+        if (_temp == _inverse)
         {
-            if (temp == false && !inverse)
+            if (_temp == false && !_inverse)
             {
-                indexPathMoving--;
+                _indexPathMoving--;
             }
-            inverse = true;
+            _inverse = true;
         }
         else
         {
-            if (temp == false && inverse == true)
+            if (_temp == false && _inverse == true)
             {
-                inverse = false;
-                indexPathMoving++;
+                _inverse = false;
+                _indexPathMoving++;
             }
         }
-        ControlIndex();           
-        //IfRotateShot();
-        
+        ControlIndex();
     }
 
     private void Shot()
-    {       
-        GameObject circleObj = Instantiate( circlePref, transform.position, Quaternion.identity ) as GameObject;
-        if (circleObj != null)
-        {
-            Projectile circle = circleObj.GetComponent<Projectile>();
-            circle.lifeTime = viewDistance;
-            circle.whereToGo = turretDirection;
-            circles.Add( circle );
-        }
-    }
-
-    private void IfRotateShot()
     {
-        if (turretDirection != pathMoving[indexPathMoving])
+        if (IsBossTurret)
         {
-            Shot();
+            GameObject circleObj = Instantiate(Projectile, transform.position, Quaternion.identity) as GameObject;
+            if (circleObj == null) return;
+            Projectile circle = circleObj.GetComponent<Projectile>();
+            circle.lifeTime = ViewDistance;
+            circle.whereToGo = TurretDirection;
+            BossScript.BossCircles.Add(circle);
+        }
+        else
+        {
+            GameObject circleObj = Instantiate(Projectile, transform.position, Quaternion.identity) as GameObject;
+            if (circleObj == null) return;
+            Projectile circle = circleObj.GetComponent<Projectile>();
+            circle.lifeTime = ViewDistance;
+            circle.whereToGo = TurretDirection;
+            _circles.Add(circle);
         }
     }
 
     private void ControlIndex()
     {
-        if (indexPathMoving == pathMoving.Length)//arriva in fondo normale
+        if (_indexPathMoving == PathMoving.Length) //arriva in fondo normale
         {
-            indexPathMoving = 0;
+            _indexPathMoving = 0;
         }
         else
         {
-            if (indexPathMoving == -1)//arriva in fondo inverso
+            if (_indexPathMoving == -1) //arriva in fondo inverso
             {
-                indexPathMoving = pathMoving.Length - 1;
+                _indexPathMoving = PathMoving.Length - 1;
             }
         }
     }

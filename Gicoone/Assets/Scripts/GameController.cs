@@ -11,8 +11,10 @@ public class GameController : MonoBehaviour
     public Material inactive_debug;
     public Material active_debug;
 
+	private bool beatPlaying;
     private float beat;
     private float tolerance;
+	private float startTime;
     private Player player;
     private Boss boss;
     private List<Turret> enemies;
@@ -21,6 +23,7 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+		beatPlaying = false;
         beat = 60.0f / bpm;
         tolerance = beat * 0.5f;
 
@@ -48,12 +51,20 @@ public class GameController : MonoBehaviour
         }
 
         audioSource = GetComponent<AudioSource>();
-
-        StartCoroutine( PlayBeat() );
+		
+		startTime = Time.time;
+        audioSource.Play(); // Musica.
     }
 
     void Update()
     {
+		float currentTime = ( startTime + Time.time ) % beat;
+		
+		if ( !beatPlaying && currentTime + tolerance >= beat )
+		{
+			StartCoroutine( PlayBeat() );
+		}
+		
         // Interfaccia col cubo di debug.
         if ( player.canMove )
             mesh_debug.material = active_debug;
@@ -64,37 +75,33 @@ public class GameController : MonoBehaviour
     private IEnumerator PlayBeat()
     {
         float halfTolerance = tolerance / 2;
-        audioSource.Play(); // Musica.
-        //audioSource.loop = true;
-        yield return new WaitForSeconds( beat - halfTolerance );
 
-        while ( true )
+		beatPlaying = true;
+		player.canMove = true;
+		
+        if ( player.inStealth )
         {
-            player.canMove = true;
-
-            if ( player.inStealth )
-            {
-                StartCoroutine( player.StealthSegment( tolerance ) );
-            }
-
-            yield return new WaitForSeconds( halfTolerance );
-
-            if ( boss != null )
-            {
-                boss.ExecuteAction();
-            }
-
-            foreach ( Turret enemy in enemies )
-            {
-                if ( enemy != null ) //volendo da mettere se active==true
-                {
-                    enemy.ExecuteAction();
-                }
-            }
-
-            yield return new WaitForSeconds( halfTolerance );
-            player.canMove = false;
-            yield return new WaitForSeconds( beat - tolerance );
+            StartCoroutine( player.StealthSegment( tolerance ) );
         }
+		
+		yield return new WaitForSeconds( halfTolerance );
+		
+		if ( boss != null )
+		{
+			boss.ExecuteAction();
+		}
+		
+		foreach ( Turret enemy in enemies )
+		{
+			if ( enemy != null ) // volendo da mettere se active==true
+			{
+				enemy.ExecuteAction();
+			}
+		}
+		
+		yield return new WaitForSeconds( halfTolerance );
+		
+		player.canMove = false;
+		beatPlaying = false;
     }
 }
