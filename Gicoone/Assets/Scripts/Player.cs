@@ -6,9 +6,6 @@ public class Player : Mobile
 {
     public int maxLives;
 	
-	public Slider livesUI;
-	public Text stealthText;
-	
 	[HideInInspector]
 	public bool canMove;
 	[HideInInspector]
@@ -16,6 +13,8 @@ public class Player : Mobile
 	
 	private bool axisPressed; // Il giocatore sta tenendo premuti i tasti di movimento?
     private int lives;
+	private Slider livesUI;
+	private Text stealthText;
 	
     new void Start()
     {
@@ -26,6 +25,8 @@ public class Player : Mobile
 
 		axisPressed = false;
         lives = maxLives;
+		livesUI = GameObject.Find( "Canvas/LivesPanel" ).GetComponent<Slider>();
+		stealthText = GameObject.Find( "Canvas/StealthText" ).GetComponent<Text>();
 		
 		UpdateLivesUI();
 		
