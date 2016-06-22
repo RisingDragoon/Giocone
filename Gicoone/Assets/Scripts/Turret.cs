@@ -193,9 +193,10 @@ public class Turret : Mobile
 
     private void Shot()
     {
+		Vector3 posProjectile = transform.position + SetOffset (TurretDirection);
         if (IsBossTurret)
         {
-            GameObject circleObj = Instantiate(Projectile, transform.position, Quaternion.identity) as GameObject;
+			GameObject circleObj = Instantiate(Projectile, posProjectile, Quaternion.identity) as GameObject;
             if (circleObj == null) return;
             Projectile circle = circleObj.GetComponent<Projectile>();
             circle.lifeTime = ViewDistance;
@@ -204,7 +205,7 @@ public class Turret : Mobile
         }
         else
         {
-            GameObject circleObj = Instantiate(Projectile, transform.position, Quaternion.identity) as GameObject;
+			GameObject circleObj = Instantiate(Projectile, posProjectile, Quaternion.identity) as GameObject;
             if (circleObj == null) return;
             Projectile circle = circleObj.GetComponent<Projectile>();
             circle.lifeTime = ViewDistance;
