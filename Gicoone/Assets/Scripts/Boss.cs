@@ -413,7 +413,8 @@ public class Boss : Mobile
     {
         foreach (Transform hand in _hands)
         {
-            GameObject circleObj = Instantiate(Projectile, hand.position, Quaternion.identity) as GameObject;
+			Vector3 posProjectile = hand.position + SetOffset (BossDirection);
+			GameObject circleObj = Instantiate(Projectile,posProjectile, Quaternion.identity) as GameObject;
             if (circleObj == null) continue;
             Projectile circle = circleObj.GetComponent<Projectile>();
             circle.whereToGo = BossDirection;
