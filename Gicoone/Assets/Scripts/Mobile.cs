@@ -156,22 +156,23 @@ public class Mobile : MonoBehaviour
 	}
 	protected Vector3 SetOffset(Direction dir)
 	{
+		Vector3 vec=new Vector3();
 		switch (dir) 
 		{
 		case Direction.Down:
-			return new Vector3 (0f,0f,-1f);
+			vec = new Vector3 (0f,0f,-1f);
 			break;
 		case Direction.Left:
-			return new Vector3 (-1f,0f,0f);
+			vec = new Vector3 (-1f,0f,0f);
 			break;
 		case Direction.Right:
-			return new Vector3 (1f,0f,0f);
+			vec = new Vector3 (1f,0f,0f);
 			break;
 		case Direction.Up:
-			return new Vector3 (0f,0f,1f);
+			vec = new Vector3 (0f,0f,1f);
 			break;
 		}
-		return new Vector3 ();
+		return vec;
 	}
 }
 

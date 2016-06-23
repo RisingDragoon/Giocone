@@ -1,9 +1,10 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Player.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Mobile.cs">
     <Files>
-      <File FileName="Assets\Scripts\Player.cs" Line="107" Column="15" />
-      <File FileName="Assets\Scripts\Mobile.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Mobile.cs" Line="133" Column="1" />
+      <File FileName="Assets\Scripts\ActiveBoss.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Player.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Boss.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Turret.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\GameController.cs" Line="1" Column="1" />
@@ -11,7 +12,9 @@
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="C:\Users\NB-KEVIN\Desktop\ProgettoSerio\Gicoone\Assets\Scripts\ActiveBoss.cs" line="24" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>
     <Watch file="Assets\Scripts\Mobile.cs" line="33" offsetX="303" offsetY="509" expression="rbody" liveUpdate="True" />

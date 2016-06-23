@@ -6,6 +6,8 @@ public class Boss : Mobile
 {
     [HideInInspector]
     public List<Projectile> BossCircles;
+	[HideInInspector]
+	public bool Active;
 
     public GameObject Projectile;
     public GameObject TurretBoss;
@@ -28,6 +30,7 @@ public class Boss : Mobile
 
     new void Start()
     {
+		Active = false;
         base.Start();
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
@@ -45,113 +48,116 @@ public class Boss : Mobile
 
     public void ExecuteAction()
     {   
-        _diffX = transform.position.x - _playerTransform.position.x;
-        _diffZ = transform.position.z - _playerTransform.position.z;
-        foreach (Turret turret in _bossTurrets)
-        {
-            if (turret.isActiveAndEnabled)
-            {
-                turret.ExecuteAction();
-            }
-        }
-        if (BossCircles != null)
-        {
-            for (int i = BossCircles.Count - 1; i >= 0; i--)
-            {
-                if (BossCircles[i] == null)
-                {
-                    BossCircles.RemoveAt(i);
-                }
-                else
-                {
-                    //fa muovere le palle
-                    BossCircles[i].AttemptMove(BossCircles[i].whereToGo);
-                }
-            }
-        }
-        #region Verifica cosa deve fare e lo fa
-        if (_stopped >= 0)
-        {
-            Debug.Log("Stopped");
-            AnimatorToMovingHands();
-            _stopped--;
-        }
-        //controlla se sta attaccando        
-        else if (_toDo == 0 || _toDo==1)
-        {
-            _turnsOfAttack++;
-            Debug.Log("Sta attaccando con l'equalizzatore o con le mani");
-            switch (_toDo)
-            {
-                case 0:
-                    ShotByHand();
-                    if (_turnsOfAttack == 6)
-                    {
-                        AnimatorToIdle();
-                        _toDo = -1;
-                        _turnsOfAttack = 0;
-                        _stopped = 4;
-                    }
-                    break;
-                case 1:
-                    Equalizer();
-                    if (_turnsOfAttack == 10)
-                    {
-                        AnimatorToIdle();
-                        _toDo = -1;
-                        _turnsOfAttack = 0;
-                        _stopped = 12;  
-                        SetInactive();                      
-                    }
-                    break;
-            }
-        }
-        //fermo?
-        else
-        {
-            //deve fare cose
-            Debug.Log("Non Stopped");
-            if (_toDo==-1)
-            {
-                _toDo = WhatToDo();
-            }
-            #region Fa cose
-            switch (_toDo)
-            {
-                case 0://attacco dalle mani
-                    AnimatorToIdle();
-                    ShotByHand();
-                    break;
-                case 1://equalizzatore
-                    AnimatorToIdle();
-                    Equalizer();
-                    break;
-                case 3://muoversi
-                    WhereToGo();
-                    #region Movimento ogni 3 turni
-                    if (_contTurns == 0)
-                    {
-                        //si muove
-                        AttemptMove(_whereToGo);
-                        if (BossDirection!=_whereToGo)
-                        {
-                            Rotate(_whereToGo.Invert());
-                        }
-                        BossDirection = _whereToGo;
-                    }
-                    if (_contTurns == 3)
-                    {
-                        _contTurns = -1;
-                    }
-                    _contTurns++;
-                    _toDo = -1;
-                    #endregion
-                    break;
-            }
-            #endregion
-        }
-        
-        #endregion  
+		if (Active) 
+		{
+			_diffX = transform.position.x - _playerTransform.position.x;
+			_diffZ = transform.position.z - _playerTransform.position.z;
+			foreach (Turret turret in _bossTurrets)
+			{
+				if (turret.isActiveAndEnabled)
+				{
+					turret.ExecuteAction();
+				}
+			}
+			if (BossCircles != null)
+			{
+				for (int i = BossCircles.Count - 1; i >= 0; i--)
+				{
+					if (BossCircles[i] == null)
+					{
+						BossCircles.RemoveAt(i);
+					}
+					else
+					{
+						//fa muovere le palle
+						BossCircles[i].AttemptMove(BossCircles[i].whereToGo);
+					}
+				}
+			}
+			#region Verifica cosa deve fare e lo fa
+			if (_stopped >= 0)
+			{
+				Debug.Log("Stopped");
+				AnimatorToMovingHands();
+				_stopped--;
+			}
+			//controlla se sta attaccando        
+			else if (_toDo == 0 || _toDo==1)
+			{
+				_turnsOfAttack++;
+				Debug.Log("Sta attaccando con l'equalizzatore o con le mani");
+				switch (_toDo)
+				{
+				case 0:
+					ShotByHand();
+					if (_turnsOfAttack == 6)
+					{
+						AnimatorToIdle();
+						_toDo = -1;
+						_turnsOfAttack = 0;
+						_stopped = 4;
+					}
+					break;
+				case 1:
+					Equalizer();
+					if (_turnsOfAttack == 10)
+					{
+						AnimatorToIdle();
+						_toDo = -1;
+						_turnsOfAttack = 0;
+						_stopped = 12;  
+						SetInactive();                      
+					}
+					break;
+				}
+			}
+			//fermo?
+			else
+			{
+				//deve fare cose
+				Debug.Log("Non Stopped");
+				if (_toDo==-1)
+				{
+					_toDo = WhatToDo();
+				}
+				#region Fa cose
+				switch (_toDo)
+				{
+				case 0://attacco dalle mani
+					AnimatorToIdle();
+					ShotByHand();
+					break;
+				case 1://equalizzatore
+					AnimatorToIdle();
+					Equalizer();
+					break;
+				case 3://muoversi
+					WhereToGo();
+					#region Movimento ogni 3 turni
+					if (_contTurns == 0)
+					{
+						//si muove
+						AttemptMove(_whereToGo);
+						if (BossDirection!=_whereToGo)
+						{
+							Rotate(_whereToGo.Invert());
+						}
+						BossDirection = _whereToGo;
+					}
+					if (_contTurns == 3)
+					{
+						_contTurns = -1;
+					}
+					_contTurns++;
+					_toDo = -1;
+					#endregion
+					break;
+				}
+				#endregion
+			}
+
+			#endregion  
+		}        
     }
 
     private void Equalizer()
