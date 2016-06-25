@@ -22,7 +22,7 @@ public class GameController : MonoBehaviour
     private Boss boss;
     private List<Turret> enemies;
 	private Transform rhythmUI;
-	private List<Animator> beatTacks;
+	private List<GameObject> beatTacks;
 
     private AudioSource audioSource;
 
@@ -52,7 +52,7 @@ public class GameController : MonoBehaviour
         }
 		
 		rhythmUI = GameObject.Find( "Canvas/RhythmBar" ).transform;
-		beatTacks = new List<Animator>();
+		beatTacks = new List<GameObject>();
 		
         audioSource = GetComponent<AudioSource>();
 		
@@ -68,16 +68,14 @@ public class GameController : MonoBehaviour
 		{
 			StartCoroutine( PlayBeat() );
 			
-			GameObject tackObj = Instantiate( Resources.Load( "BeatTack" ) ) as GameObject;
-			tackObj.transform.SetParent( rhythmUI, false );
-			
-			Animator tack = tackObj.GetComponent<Animator>();
-			tack.SetFloat( "bpm", bpm );
+			GameObject tack = Instantiate( Resources.Load( "BeatTack" ) ) as GameObject;
+			tack.transform.SetParent( rhythmUI, false );
+			tack.GetComponent<Animator>().SetFloat( "bpm", bpm );
 			beatTacks.Add( tack );
 			
 			if ( beatTacks.Count > 4 )
 			{
-				Destroy( beatTacks[0].gameObject );
+				Destroy( beatTacks[0] );
 				beatTacks.RemoveAt( 0 );
 			}
 		}
@@ -129,7 +127,7 @@ public class GameController : MonoBehaviour
 		if ( i < 0 )
 			return; // Non ci sono ancora abbastanza tacks.
 		
-		Destroy( beatTacks[i].gameObject );
+		Destroy( beatTacks[i] );
 		beatTacks.RemoveAt( i );
 	}
 }
