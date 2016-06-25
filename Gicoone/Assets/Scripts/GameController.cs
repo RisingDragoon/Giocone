@@ -5,6 +5,9 @@ using System.Collections.Generic;
 public class GameController : MonoBehaviour
 {
     public float bpm;
+	
+	[HideInInspector]
+    public float beat;
 
     // Queste variabili servono ad interfacciarsi col cubo verde/rosso di debug.
     public MeshRenderer mesh_debug;
@@ -12,27 +15,25 @@ public class GameController : MonoBehaviour
     public Material active_debug;
 
 	private bool beatPlaying;
-    private float beat;
     private float tolerance;
 	private float startTime;
+	
     private Player player;
     private Boss boss;
     private List<Turret> enemies;
+	private Transform rhythmUI;
+	private List<Animator> beatTacks;
 
     private AudioSource audioSource;
 
     void Start()
     {
-		beatPlaying = false;
         beat = 60.0f / bpm;
+		
+		beatPlaying = false;
         tolerance = beat * 0.5f;
-
-        GameObject playerObj = GameObject.FindGameObjectWithTag( "Player" );
-
-        if ( playerObj != null )
-        {
-            player = playerObj.GetComponent<Player>();
-        }
+		
+		player = GameObject.FindGameObjectWithTag( "Player" ).GetComponent<Player>();
 
         GameObject bossObj = GameObject.FindGameObjectWithTag( "Boss" );
 
@@ -49,7 +50,10 @@ public class GameController : MonoBehaviour
             Turret enemy = obj.GetComponent<Turret>();
             enemies.Add( enemy );
         }
-
+		
+		rhythmUI = GameObject.Find( "Canvas/RhythmBar" ).transform;
+		beatTacks = new List<Animator>();
+		
         audioSource = GetComponent<AudioSource>();
 		
 		startTime = Time.time;
@@ -63,6 +67,19 @@ public class GameController : MonoBehaviour
 		if ( !beatPlaying && currentTime + tolerance >= beat )
 		{
 			StartCoroutine( PlayBeat() );
+			
+			GameObject tackObj = Instantiate( Resources.Load( "BeatTack" ) ) as GameObject;
+			tackObj.transform.SetParent( rhythmUI, false );
+			
+			Animator tack = tackObj.GetComponent<Animator>();
+			tack.SetFloat( "bpm", bpm );
+			beatTacks.Add( tack );
+			
+			if ( beatTacks.Count > 4 )
+			{
+				Destroy( beatTacks[0].gameObject );
+				beatTacks.RemoveAt( 0 );
+			}
 		}
 		
         // Interfaccia col cubo di debug.
@@ -75,13 +92,13 @@ public class GameController : MonoBehaviour
     private IEnumerator PlayBeat()
     {
         float halfTolerance = tolerance / 2;
-
+		
 		beatPlaying = true;
 		player.canMove = true;
 		
         if ( player.inStealth )
         {
-            StartCoroutine( player.StealthSegment( tolerance ) );
+            player.StartStealthSegment();
         }
 		
 		yield return new WaitForSeconds( halfTolerance );
@@ -104,4 +121,15 @@ public class GameController : MonoBehaviour
 		player.canMove = false;
 		beatPlaying = false;
     }
+	
+	public void CatchBeatTack()
+	{
+		int i = beatTacks.Count - 3;
+		
+		if ( i < 0 )
+			return; // Non ci sono ancora abbastanza tacks.
+		
+		Destroy( beatTacks[i].gameObject );
+		beatTacks.RemoveAt( i );
+	}
 }

@@ -5,6 +5,7 @@ using System.Collections;
 public class Player : Mobile
 {
     public int maxLives;
+	public int stealthCycles;
 	
 	[HideInInspector]
 	public bool canMove;
@@ -13,68 +14,90 @@ public class Player : Mobile
 	
 	private bool axisPressed; // Il giocatore sta tenendo premuti i tasti di movimento?
     private int lives;
+	private Direction stealthExit; // In quale direzione il personaggio viene risputato fuori quando deve lasciare lo stealth?
+	
+    private GameController gameController;
 	private Slider livesUI;
-	private Text stealthText;
+	private Slider stealthUI;
 	
     new void Start()
     {
         base.Start();
 		
         canMove = false;
-		inStealth = false;
 
 		axisPressed = false;
         lives = maxLives;
+		
+		gameController = GameObject.FindGameObjectWithTag( "GameController" ).GetComponent<GameController>();
 		livesUI = GameObject.Find( "Canvas/LivesPanel" ).GetComponent<Slider>();
-		stealthText = GameObject.Find( "Canvas/StealthText" ).GetComponent<Text>();
+		stealthUI = GameObject.Find( "Canvas/StealthBar" ).GetComponent<Slider>();
 		
 		UpdateLivesUI();
-		
-		stealthText.text = null;
+		ExitStealth();
     }
 
 	void Update()
 	{
-		if ( Input.GetButtonDown( "Stealth" ) && canMove )
-		{
-			inStealth = true;
-			canMove = false;
-		}
-		else if ( Input.GetButtonUp( "Stealth" ) )
-		{
-			inStealth = false;
-		}
-		
-		if ( !inStealth )
-		{
-			int hor = (int) Input.GetAxisRaw( "Horizontal" );
-			int ver = (int) Input.GetAxisRaw( "Vertical" );
+		int hor = (int) Input.GetAxisRaw( "Horizontal" );
+		int ver = (int) Input.GetAxisRaw( "Vertical" );
 			
-			if ( hor != 0 || ver != 0 )
+		if ( hor != 0 || ver != 0 )
+		{
+			if ( !axisPressed )
 			{
-				if ( !axisPressed )
+				if ( canMove && !moving )
 				{
-					if ( canMove && !moving )
+					if ( hor == 0 || ver == 0 ) // Se il giocatore prova a muoversi contemporaneamente su due assi, l'input viene ignorato.
 					{
-						if ( hor == 0 || ver == 0 ) // Se il giocatore prova a muoversi contemporaneamente su due assi, l'input viene ignorato.
-						{
-							Vector3 vec = new Vector3( hor, 0.0f, ver );
-							Rotate( vec );
-							AttemptMove( vec );
-							canMove = false; // Il giocatore non può muoversi due volte nello stesso beat.
-						}
-					}
-					else
-					{
-						LoseLife();
+						Vector3 vec = new Vector3( hor, 0.0f, ver );
+						Rotate( vec );
+						bool hasMoved = AttemptMove( vec );
+						
+						if ( hasMoved )
+							ExitStealth(); // Il giocatore non può essere in stealth quando effettivamente inizia a muoversi.
+						
+						canMove = false; // Il giocatore non può muoversi due volte nello stesso beat.
+						
+						gameController.CatchBeatTack();
 					}
 				}
-				
-				axisPressed = true;
+				else
+				{
+					LoseLife();
+				}
 			}
-			else
+				
+			axisPressed = true;
+		}
+		else
+			axisPressed = false;
+		
+		if ( Input.GetButtonDown( "Stealth" ) )
+			GetFacing();
+	}
+	
+	public void AfterMoveChecks()
+	{
+		Collider[] overlap = Physics.OverlapBox( transform.position, new Vector3( 0.4f, 0.4f, 0.4f ) );
+		
+		foreach ( Collider trigger in overlap )
+		{
+			if ( trigger.CompareTag( "Pickup" ) )
 			{
-				axisPressed = false;
+				Destroy( trigger.gameObject );
+				GainLife();
+			}
+			else if ( trigger.CompareTag( "Stealther" ) )
+			{
+				EnterStealth();
+				stealthExit = GetFacing().Invert();
+			}
+			else if ( trigger.CompareTag( "Finish" ) )
+			{
+				Destroy( trigger.gameObject );
+				// Gestire il game over.
+				Debug.Log( "Il player ha preso il vinile!" );
 			}
 		}
 	}
@@ -107,90 +130,38 @@ public class Player : Mobile
 		livesUI.value = lives;
 	}
 	
-	public IEnumerator StealthSegment( float tolerance )
+	private void EnterStealth()
 	{
-		bool safeSegment = false;
-		float startTime = Time.time;
-		Direction toPress = (Direction) Random.Range( 0, 4 );
+		inStealth = true;
+		stealthUI.gameObject.SetActive( true );
+		stealthUI.value = 1.0f;
+	}
+	
+	private void ExitStealth()
+	{
+		inStealth = false;
+		stealthUI.gameObject.SetActive( false );
+		StopCoroutine( "StealthSegment" );
+	}
+	
+	public void StartStealthSegment()
+	{
+		StartCoroutine( "StealthSegment" );
+	}
+	
+	private IEnumerator StealthSegment()
+	{
+		float lapse = gameController.beat * stealthCycles;
+		float endTime = Time.time + lapse;
 		
-		// Debug.
-		string arrowSymbol = "?";
-		
-		switch ( toPress )
+		while ( Time.time <= endTime )
 		{
-			case Direction.Up:
-                arrowSymbol = "\u2191";
-                break;
-            case Direction.Down:
-                arrowSymbol = "\u2193";
-                break;
-            case Direction.Left:
-                arrowSymbol = "\u2190";
-                break;
-            case Direction.Right:
-                arrowSymbol = "\u2192";
-                break;
-		}
-		
-		stealthText.text = "Devi premere " + arrowSymbol;
-		// Fine Debug.
-		
-		while ( true )
-		{
-			int hor = (int) Input.GetAxisRaw( "Horizontal" );
-			int ver = (int) Input.GetAxisRaw( "Vertical" );
-			
-			if ( hor != 0 || ver != 0 )
-			{
-				if ( !axisPressed )
-				{
-					if ( canMove )
-					{
-						Vector3 vecToPress = toPress.ToVector();
-						
-						if ( hor == vecToPress.x && ver == vecToPress.z )
-						{
-							Debug.Log( "Input corretto." );
-							safeSegment = true;
-							
-							stealthText.text = null; // Debug.
-						}
-						else
-						{
-							Debug.Log( "Input errato." );
-							inStealth = false;
-						}
-						
-						canMove = false;
-					}
-					else
-					{
-						Debug.Log( "Button mashing." );
-						inStealth = false;
-					}
-				}
-				
-				axisPressed = true;
-			}
-			else
-			{
-				axisPressed = false;
-			}
-			
-			if ( startTime + tolerance <= Time.time )
-			{
-				if ( !safeSegment )
-				{
-					Debug.Log( "Nessun input o input errato, termino lo stealth." );
-					inStealth = false;
-					
-					stealthText.text = null; // Debug.
-				}
-				
-				break;
-			}
-			
+			stealthUI.value = ( endTime - Time.time ) / lapse;
 			yield return null;
 		}
+		
+		AttemptMove( stealthExit );
+		canMove = false;
+		ExitStealth();
 	}
 }

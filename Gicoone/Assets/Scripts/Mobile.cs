@@ -52,13 +52,7 @@ public class Mobile : MonoBehaviour
         }
         else if ( transform.CompareTag( "Player" ) )
 		{
-			if ( hit.transform.CompareTag( "Finish" ) )
-			{
-				Destroy( hit.transform.gameObject );
-				Debug.Log( "Il player ha preso il vinile!" );
-				return true;
-			}
-			else if ( hit.transform.CompareTag( "Pushable" ) )
+			if ( hit.transform.CompareTag( "Pushable" ) )
 			{
 				Mobile pushed = hit.transform.GetComponent<Mobile>();
 
@@ -68,32 +62,13 @@ public class Mobile : MonoBehaviour
 					return true;
 				}
 				else
-				{
 					return false;
-				}
-			}
-			else if ( hit.transform.CompareTag( "Pickup" ) )
-			{
-				StartCoroutine( MoveSmoothly( endPos ) );
-				Destroy( hit.transform.gameObject );
-				gameObject.GetComponent<Player>().GainLife();
-				return true;
 			}
 			else
-			{
 				return false;
-			}
 		}
         else
-        {
             return false;
-        }
-
-		// else
-		//	anim.SetInteger( "pace", 0 );
-		
-		// anim.SetInteger( "hor", hor );
-		// anim.SetInteger( "ver", ver );
 	}
 	
 	public bool AttemptMove( Direction dir )
@@ -119,12 +94,9 @@ public class Mobile : MonoBehaviour
 		moving = true;
 		
 		GameObject blocker = Instantiate( Resources.Load( "Blocker" ), endPos, Quaternion.identity ) as GameObject;
-		// anim.SetInteger( "pace", 1 );
 		
 		if ( transform.CompareTag( "Projectile" ) )
-		{
 			Destroy( blocker );
-		}
 		
 		float sqrDistanceLeft = ( transform.position - endPos ).sqrMagnitude;
 		
@@ -136,6 +108,9 @@ public class Mobile : MonoBehaviour
 			
 			yield return null;
 		}
+		
+		if ( transform.CompareTag( "Player" ) )
+			gameObject.GetComponent<Player>().AfterMoveChecks();
 		
 		Destroy( blocker );
 		moving = false;
@@ -154,6 +129,23 @@ public class Mobile : MonoBehaviour
 			yield return null;
 		}
 	}
+	
+	public Direction GetFacing()
+	{
+		float angle = transform.rotation.eulerAngles.y;
+		
+		if ( angle < 45.0f )
+			return Direction.Up;
+		else if ( angle < 135.0f )
+			return Direction.Right;
+		else if ( angle < 225.0f )
+			return Direction.Down;
+		else if ( angle < 315.0f )
+			return Direction.Left;
+		else
+			return Direction.Up;
+	}
+	
 	protected Vector3 SetOffset(Direction dir)
 	{
 		Vector3 vec=new Vector3();
