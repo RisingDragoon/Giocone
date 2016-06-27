@@ -27,11 +27,18 @@ public class Boss : Mobile
     private Transform[] _hands;
     private Transform _playerTransform;
     private Direction _whereToGo;
+    private int[] _pathBalls;
+    private int _indexHands;
+    private bool _attack;
 
     new void Start()
     {
 		Active = false;
         base.Start();
+        _attack = true;
+        _pathBalls = new int[3];
+        InsertPathBalls();
+        _indexHands = 0;
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
         {
@@ -50,7 +57,11 @@ public class Boss : Mobile
     {   
 		if (Active) 
 		{
-			_diffX = transform.position.x - _playerTransform.position.x;
+            if (_indexHands == 3)
+            {
+                _indexHands = 0;
+            }
+            _diffX = transform.position.x - _playerTransform.position.x;
 			_diffZ = transform.position.z - _playerTransform.position.z;
 			foreach (Turret turret in _bossTurrets)
 			{
@@ -77,7 +88,7 @@ public class Boss : Mobile
 			#region Verifica cosa deve fare e lo fa
 			if (_stopped >= 0)
 			{
-				Debug.Log("Stopped");
+				//Debug.Log("Stopped");
 				AnimatorToMovingHands();
 				_stopped--;
 			}
@@ -85,14 +96,14 @@ public class Boss : Mobile
 			else if (_toDo == 0 || _toDo==1)
 			{
 				_turnsOfAttack++;
-				Debug.Log("Sta attaccando con l'equalizzatore o con le mani");
+				//Debug.Log("Sta attaccando con l'equalizzatore o con le mani");
 				switch (_toDo)
 				{
 				case 0:
-					ShotByHand();
-					if (_turnsOfAttack == 6)
+                    ShotByHand();
+                    if (_turnsOfAttack == 12)
 					{
-						AnimatorToIdle();
+                        AnimatorToIdle();
 						_toDo = -1;
 						_turnsOfAttack = 0;
 						_stopped = 4;
@@ -100,7 +111,7 @@ public class Boss : Mobile
 					break;
 				case 1:
 					Equalizer();
-					if (_turnsOfAttack == 10)
+					if (_turnsOfAttack == 9)
 					{
 						AnimatorToIdle();
 						_toDo = -1;
@@ -115,7 +126,7 @@ public class Boss : Mobile
 			else
 			{
 				//deve fare cose
-				Debug.Log("Non Stopped");
+				//Debug.Log("Non Stopped");
 				if (_toDo==-1)
 				{
 					_toDo = WhatToDo();
@@ -125,7 +136,7 @@ public class Boss : Mobile
 				{
 				case 0://attacco dalle mani
 					AnimatorToIdle();
-					ShotByHand();
+					//ShotByHand();
 					break;
 				case 1://equalizzatore
 					AnimatorToIdle();
@@ -303,22 +314,21 @@ public class Boss : Mobile
                     {
                         //lontano da 4 a 8 unità
                         //equalizzatore
-                        Debug.Log("Equalizer");
+                        //Debug.Log("Equalizer");
                         temp = 1;
                     }
                     else if (_diffZ <= 4 && _diffZ>1 && Math.Abs(_diffX) < 2)
                     {
                         //lontano meno di 4 unità e nelle tre colonne del boss
                         //attacco con le mani
-                        Debug.Log("Attacco mani");
+                        //Debug.Log("Attacco mani");
                         temp = 0;
                     }
                     else
                     {
                         //si dovrà vuovere
                         temp = 3;
-                        Debug.Log("Movimento");
-                    
+                        //Debug.Log("Movimento");
                     }
                     #endregion
                 break;
@@ -327,7 +337,7 @@ public class Boss : Mobile
                     if (_diffZ < -4 && _diffZ > -8)
                     {
                         //lontano da 4 a 8 unità
-                        Debug.Log("Equalizer");
+                        //Debug.Log("Equalizer");
                     //equalizzatore
                     temp = 1;
                     }
@@ -335,15 +345,14 @@ public class Boss : Mobile
                     {
                         //lontano meno di 4 unità e nelle tre colonne del boss
                         //attacco con le mani
-                        Debug.Log("Attacco mani");
+                        //Debug.Log("Attacco mani");
                         temp = 0;
                     }
                     else
                     {
                         //si dovrà vuovere
                         temp = 3;
-                        Debug.Log("Movimento");
-                    
+                        //Debug.Log("Movimento");
                     }
                 #endregion
                 break;
@@ -353,21 +362,21 @@ public class Boss : Mobile
                     {
                         //lontano da 4 a 8 unità
                         //equalizzatore
-                        Debug.Log("Equalizer");
+                        //Debug.Log("Equalizer");
                         temp = 1;
                     }
                     else if (_diffX >= -4 && _diffX < -1 && Math.Abs(_diffZ) < 2)
                     {
                         //lontano meno di 4 unità e nelle tre colonne del boss
                         //attacco con le mani
-                        Debug.Log("Attacco mani");
+                        //Debug.Log("Attacco mani");
                         temp = 0;
                     }
                     else
                     {
                         //si dovrà vuovere
                         temp = 3;
-                        Debug.Log("Movimento");
+                        //Debug.Log("Movimento");
                     
                     }
                 #endregion
@@ -376,7 +385,7 @@ public class Boss : Mobile
                     #region Left
                     if (_diffX > 4 && _diffX < 8)
                     {
-                        Debug.Log("Equalizer");
+                        //Debug.Log("Equalizer");
                     //lontano da 4 a 8 unità
                     //equalizzatore
                     temp = 1;
@@ -385,14 +394,14 @@ public class Boss : Mobile
                     {
                         //lontano meno di 4 unità e nelle tre colonne del boss
                         //attacco con le mani
-                        Debug.Log("Attacco mani");
+                        //Debug.Log("Attacco mani");
                         temp = 0;
                     }
                     else
                     {
                         //si dovrà vuovere
                         temp = 3;
-                        Debug.Log("Movimento");
+                        //Debug.Log("Movimento");
                     
                     }
                 #endregion
@@ -417,15 +426,20 @@ public class Boss : Mobile
 
     private void ShotByHand()
     {
-        foreach (Transform hand in _hands)
+        if (_attack)
         {
-			Vector3 posProjectile = hand.position + SetOffset (BossDirection);
-			GameObject circleObj = Instantiate(Projectile,posProjectile, Quaternion.identity) as GameObject;
-            if (circleObj == null) continue;
-            Projectile circle = circleObj.GetComponent<Projectile>();
-            circle.whereToGo = BossDirection;
-            BossCircles.Add(circle);
-        }        
+            Vector3 posProjectile = _hands[_pathBalls[_indexHands]].position + BossDirection.ToVector();
+            GameObject circleObj = Instantiate(Projectile, posProjectile, Quaternion.identity) as GameObject;
+            if (circleObj != null)
+            {
+                Projectile circle = circleObj.GetComponent<Projectile>();
+                circle.whereToGo = BossDirection;
+                BossCircles.Add(circle);
+            }
+            _indexHands++;
+        }
+        _attack = !_attack;
+
     }
 
     private void AnimatorToIdle()
@@ -442,6 +456,13 @@ public class Boss : Mobile
         if (anim == null) return;
         anim.SetBool("Punching", false);
         anim.SetBool("MovingHand", true);
+    }
+
+    private void InsertPathBalls()
+    {
+        _pathBalls[0] = 1;
+        _pathBalls[1] = 2;
+        _pathBalls[2] = 0;
     }
     
 }

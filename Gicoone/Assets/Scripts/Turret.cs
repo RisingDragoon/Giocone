@@ -23,7 +23,8 @@ public class Turret : Mobile
     public bool IsBossTurret;
 
 
-    public bool UsePathRotating;
+	public bool UsePathRotating;
+    public bool FixedDirection;
     public  Direction[] PathMoving = new Direction[1];
     public  Direction[] PathRotating = new Direction[1];
 	public Direction TurretDirection = Direction.Right;
@@ -148,18 +149,26 @@ public class Turret : Mobile
 
     private void Move()
     {
-        //Debug.Log(indexPath);
-        TurretDirection = _inverse ? PathMoving[_indexPathMoving].Invert() : PathMoving[_indexPathMoving];
+		if (!FixedDirection) 
+		{			
+			TurretDirection = _inverse ? PathMoving[_indexPathMoving].Invert() : PathMoving[_indexPathMoving];
+		}
         if (_inverse)
         {
             Direction newDirection = PathMoving[_indexPathMoving].Invert();
             _temp = AttemptMove(newDirection);
-            Rotate(newDirection);
+            if (!FixedDirection)
+            {
+                Rotate(newDirection);
+            }
         }
         else
         {
             _temp = AttemptMove(PathMoving[_indexPathMoving]);
-            Rotate(PathMoving[_indexPathMoving]);
+            if (!FixedDirection)
+            {
+                Rotate(PathMoving[_indexPathMoving]);
+            }
         }
         if (_temp)
         {
@@ -193,7 +202,7 @@ public class Turret : Mobile
 
     private void Shot()
     {
-		Vector3 posProjectile = transform.position + SetOffset (TurretDirection);
+		Vector3 posProjectile = transform.position + TurretDirection.ToVector();
         if (IsBossTurret)
         {
 			GameObject circleObj = Instantiate(Projectile, posProjectile, Quaternion.identity) as GameObject;

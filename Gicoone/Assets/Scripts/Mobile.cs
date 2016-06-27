@@ -146,26 +146,7 @@ public class Mobile : MonoBehaviour
 			return Direction.Up;
 	}
 	
-	protected Vector3 SetOffset(Direction dir)
-	{
-		Vector3 vec=new Vector3();
-		switch (dir) 
-		{
-		case Direction.Down:
-			vec = new Vector3 (0f,0f,-1f);
-			break;
-		case Direction.Left:
-			vec = new Vector3 (-1f,0f,0f);
-			break;
-		case Direction.Right:
-			vec = new Vector3 (1f,0f,0f);
-			break;
-		case Direction.Up:
-			vec = new Vector3 (0f,0f,1f);
-			break;
-		}
-		return vec;
-	}
+	
 }
 
 public static class DirectionExtension
