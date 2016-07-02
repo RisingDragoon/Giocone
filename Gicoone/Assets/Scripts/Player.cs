@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class Player : Mobile
@@ -96,8 +97,10 @@ public class Player : Mobile
 			else if ( trigger.CompareTag( "Finish" ) )
 			{
 				Destroy( trigger.gameObject );
-				// Gestire il game over.
 				Debug.Log( "Il player ha preso il vinile!" );
+				
+				int sceneIndex = SceneManager.GetActiveScene().buildIndex;
+				SceneManager.LoadScene( sceneIndex + 1 );
 			}
 		}
 	}
