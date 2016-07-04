@@ -20,6 +20,8 @@ public class Player : Mobile
     private GameController gameController;
 	private Slider livesUI;
 	private Slider stealthUI;
+    public AudioSource[] loseLifeSound;
+
 	
     new void Start()
     {
@@ -29,8 +31,8 @@ public class Player : Mobile
 
 		axisPressed = false;
         lives = maxLives;
-		
-		gameController = GameObject.FindGameObjectWithTag( "GameController" ).GetComponent<GameController>();
+        loseLifeSound = GetComponents<AudioSource>();
+        gameController = GameObject.FindGameObjectWithTag( "GameController" ).GetComponent<GameController>();
 		livesUI = GameObject.Find( "Canvas/LivesPanel" ).GetComponent<Slider>();
 		stealthUI = GameObject.Find( "Canvas/StealthBar" ).GetComponent<Slider>();
 		
@@ -66,7 +68,10 @@ public class Player : Mobile
 				else
 				{
 					LoseLife();
-				}
+                    //suono che hai sbagliato
+                    loseLifeSound[0].Play();
+
+                }
 			}
 				
 			axisPressed = true;
@@ -167,4 +172,9 @@ public class Player : Mobile
 		canMove = false;
 		ExitStealth();
 	}
+
+    public void PlayLoseLifeByProjectile()
+    {
+        loseLifeSound[1].Play();
+    }
 }

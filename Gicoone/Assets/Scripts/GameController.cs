@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -62,6 +63,10 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetButtonDown("Restart"))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
 		float currentTime = ( startTime + Time.time ) % beat;
 		
 		if ( !beatPlaying && currentTime + tolerance >= beat )
