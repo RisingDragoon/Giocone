@@ -5,7 +5,8 @@ using System.Collections;
 
 public class Player : Mobile
 {
-    public int maxLives;
+    private const int maxLives = 10;
+	
 	public int stealthCycles;
 	
 	[HideInInspector]
@@ -17,10 +18,10 @@ public class Player : Mobile
     private int lives;
 	private Direction stealthExit; // In quale direzione il personaggio viene risputato fuori quando deve lasciare lo stealth?
 	
+    private AudioSource[] loseLifeSound;
     private GameController gameController;
 	private Slider livesUI;
 	private Slider stealthUI;
-    public AudioSource[] loseLifeSound;
 
 	
     new void Start()
@@ -31,6 +32,7 @@ public class Player : Mobile
 
 		axisPressed = false;
         lives = maxLives;
+		
         loseLifeSound = GetComponents<AudioSource>();
         gameController = GameObject.FindGameObjectWithTag( "GameController" ).GetComponent<GameController>();
 		livesUI = GameObject.Find( "Canvas/LivesPanel" ).GetComponent<Slider>();
@@ -68,19 +70,14 @@ public class Player : Mobile
 				else
 				{
 					LoseLife();
-                    //suono che hai sbagliato
-                    loseLifeSound[0].Play();
-
+                    loseLifeSound[0].Play(); // Suono che hai sbagliato.
                 }
 			}
-				
+			
 			axisPressed = true;
 		}
 		else
 			axisPressed = false;
-		
-		if ( Input.GetButtonDown( "Stealth" ) )
-			GetFacing();
 	}
 	
 	public void AfterMoveChecks()

@@ -145,8 +145,6 @@ public class Mobile : MonoBehaviour
 		else
 			return Direction.Up;
 	}
-	
-	
 }
 
 public static class DirectionExtension
