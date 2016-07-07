@@ -33,8 +33,8 @@ public class GameController : MonoBehaviour
     void Start()
     {
         beat = 60.0f / bpm;
-		
-		beatPlaying = false;
+
+        beatPlaying = false;
         tolerance = beat * 0.5f;
 		
 		player = GameObject.FindGameObjectWithTag( "Player" ).GetComponent<Player>();
@@ -59,8 +59,17 @@ public class GameController : MonoBehaviour
 		beatTacks = new List<GameObject>();
 		
         audioSource = GetComponent<AudioSource>();
-		
-		startTime = Time.time;
+
+        float frequency = bpm / 60.0f;
+        
+        GameObject[] pulsers = GameObject.FindGameObjectsWithTag("Pulser");
+
+        foreach ( GameObject obj in pulsers )
+        {
+            obj.GetComponent<Animator>().SetFloat("bpm", frequency);
+        }
+
+        startTime = Time.time;
         audioSource.Play(); // Musica.
     }
 
