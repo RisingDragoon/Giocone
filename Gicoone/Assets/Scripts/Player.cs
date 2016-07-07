@@ -19,6 +19,7 @@ public class Player : Mobile
 	private Direction stealthExit; // In quale direzione il personaggio viene risputato fuori quando deve lasciare lo stealth?
 	
     private AudioSource[] loseLifeSound;
+    private Animator animator;
     private GameController gameController;
 	private Slider livesUI;
 	private Slider stealthUI;
@@ -34,6 +35,7 @@ public class Player : Mobile
         lives = maxLives;
 		
         loseLifeSound = GetComponents<AudioSource>();
+        animator = GetComponent<Animator>();
         gameController = GameObject.FindGameObjectWithTag( "GameController" ).GetComponent<GameController>();
 		livesUI = GameObject.Find( "Canvas/LivesPanel" ).GetComponent<Slider>();
 		stealthUI = GameObject.Find( "Canvas/StealthBar" ).GetComponent<Slider>();
@@ -99,10 +101,9 @@ public class Player : Mobile
 			else if ( trigger.CompareTag( "Finish" ) )
 			{
 				Destroy( trigger.gameObject );
-				Debug.Log( "Il player ha preso il vinile!" );
-				
-				int sceneIndex = SceneManager.GetActiveScene().buildIndex;
-				SceneManager.LoadScene( sceneIndex + 1 );
+			    moving = true;
+
+			    animator.SetTrigger( "Finish" );
 			}
 		}
 	}
@@ -174,10 +175,9 @@ public class Player : Mobile
     {
         loseLifeSound[1].Play();
     }
-
-    public bool InStealth()
+    private void LoadNextLevel()
     {
-
-        return inStealth;
+        int sceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(sceneIndex + 1);
     }
 }
