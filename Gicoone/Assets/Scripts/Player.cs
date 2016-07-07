@@ -174,4 +174,10 @@ public class Player : Mobile
     {
         loseLifeSound[1].Play();
     }
+
+    public bool InStealth()
+    {
+
+        return inStealth;
+    }
 }
