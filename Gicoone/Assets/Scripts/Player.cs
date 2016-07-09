@@ -6,8 +6,7 @@ using System.Collections;
 public class Player : Mobile
 {
     private const int maxLives = 10;
-	
-	public int stealthCycles;
+	private const int stealthCycles = 4;
 	
 	[HideInInspector]
 	public bool canMove;
@@ -15,6 +14,7 @@ public class Player : Mobile
 	public bool inStealth;
 	
 	private bool axisPressed; // Il giocatore sta tenendo premuti i tasti di movimento?
+    private bool busy;
     private int lives;
 	private Direction stealthExit; // In quale direzione il personaggio viene risputato fuori quando deve lasciare lo stealth?
 	
@@ -23,7 +23,6 @@ public class Player : Mobile
     private GameController gameController;
 	private Slider livesUI;
 	private Slider stealthUI;
-
 	
     new void Start()
     {
@@ -32,6 +31,7 @@ public class Player : Mobile
         canMove = false;
 
 		axisPressed = false;
+        busy = false;
         lives = maxLives;
 		
         loseLifeSound = GetComponents<AudioSource>();
@@ -53,7 +53,7 @@ public class Player : Mobile
 		{
 			if ( !axisPressed )
 			{
-				if ( canMove && !moving )
+				if ( canMove && !moving && !busy )
 				{
 					if ( hor == 0 || ver == 0 ) // Se il giocatore prova a muoversi contemporaneamente su due assi, l'input viene ignorato.
 					{
@@ -69,7 +69,7 @@ public class Player : Mobile
 						gameController.CatchBeatTack();
 					}
 				}
-				else
+				else if ( !busy )
 				{
 					LoseLife();
                     loseLifeSound[0].Play(); // Suono che hai sbagliato.
@@ -101,7 +101,7 @@ public class Player : Mobile
 			else if ( trigger.CompareTag( "Finish" ) )
 			{
 				Destroy( trigger.gameObject );
-			    moving = true;
+			    busy = true;
 
 			    animator.SetTrigger( "Finish" );
 			}
