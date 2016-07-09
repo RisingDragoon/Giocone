@@ -88,48 +88,6 @@
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>Library\UnityAssemblies\SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
-    <Reference Include="ConditionalExpression">
-      <HintPath>Assets\PlayMaker\ConditionalExpression.dll</HintPath>
-    </Reference>
-    <Reference Include="ConditionalExpressionEditor">
-      <HintPath>Assets\PlayMaker\Editor\ConditionalExpressionEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="PlayMakerEditor">
-      <HintPath>Assets\PlayMaker\Editor\PlayMakerEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="PlayMakerEditorResources">
-      <HintPath>Assets\PlayMaker\Editor\PlayMakerEditorResources.dll</HintPath>
-    </Reference>
-    <Reference Include="PlayMakerEditor.de.resources">
-      <HintPath>Assets\PlayMaker\Editor\de\PlayMakerEditor.de.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="PlayMakerEditor.es-ES.resources">
-      <HintPath>Assets\PlayMaker\Editor\es-ES\PlayMakerEditor.es-ES.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="PlayMakerEditor.fr.resources">
-      <HintPath>Assets\PlayMaker\Editor\fr\PlayMakerEditor.fr.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="PlayMakerEditor.it.resources">
-      <HintPath>Assets\PlayMaker\Editor\it\PlayMakerEditor.it.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="PlayMakerEditor.ja.resources">
-      <HintPath>Assets\PlayMaker\Editor\ja\PlayMakerEditor.ja.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="PlayMakerEditor.nl.resources">
-      <HintPath>Assets\PlayMaker\Editor\nl\PlayMakerEditor.nl.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="PlayMakerEditor.pt-BR.resources">
-      <HintPath>Assets\PlayMaker\Editor\pt-BR\PlayMakerEditor.pt-BR.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="PlayMakerEditor.sv-SE.resources">
-      <HintPath>Assets\PlayMaker\Editor\sv-SE\PlayMakerEditor.sv-SE.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="PlayMakerEditor.zh-CN.resources">
-      <HintPath>Assets\PlayMaker\Editor\zh-CN\PlayMakerEditor.zh-CN.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="PlayMakerEditor.zh-TW.resources">
-      <HintPath>Assets\PlayMaker\Editor\zh-TW\PlayMakerEditor.zh-TW.resources.dll</HintPath>
-    </Reference>
     <Reference Include="PlayMaker">
       <HintPath>Assets\Plugins\PlayMaker\PlayMaker.dll</HintPath>
     </Reference>
@@ -160,90 +118,8 @@
     <Compile Include="Assets\Editor\ImageEffects\SunShaftsEditor.cs" />
     <Compile Include="Assets\Editor\ImageEffects\TonemappingEditor.cs" />
     <Compile Include="Assets\Editor\ImageEffects\VignetteAndChromaticAberrationEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\BaseClasses\OnAnimatorUpdateActionEditorBase.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorAnimatorRootActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorBoneGameObjectActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorBoolActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorCurrentStateInfoActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorCurrentStateInfoIsNameActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorCurrentStateInfoIsTagActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorCurrentTransitionInfoActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorCurrentTransitionInfoIsNameActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorCurrentTransitionInfoIsUserNameActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorDeltaActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorFloatActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorGravityWeightActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorIKGoalActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorIntActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorIsLayerInTransitionActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorIsMatchingTargetActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorLayerWeightActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorNextStateInfoActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorPivotActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorSpeedActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\GetAnimatorTargetActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\SetAnimatorBoolActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\SetAnimatorFloatActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Animator\Editor\SetAnimatorIntActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Editor\GetDistanceEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Editor\LookAtActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Editor\MoveTowardsActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Editor\SetCameraFOVActionEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Quaternion\Editor\GetQuaternionEulerAnglesCustomEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Quaternion\Editor\GetQuaternionFromRotationCustomEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Quaternion\Editor\GetQuaternionMultipliedByQuaternionCustomEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Quaternion\Editor\GetQuaternionMultipliedByVectorCustomEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Quaternion\Editor\QuaternionAngleAxisCustomEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Quaternion\Editor\QuaternionCustomEditorBase.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Quaternion\Editor\QuaternionEulerCustomEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Quaternion\Editor\QuaternionInverseCustomEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Quaternion\Editor\QuaternionLerpCustomEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Quaternion\Editor\QuaternionLookRotationCustomEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Quaternion\Editor\QuaternionLowPassFilterCustomEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Quaternion\Editor\QuaternionRotateTowardsCustomEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Actions\Quaternion\Editor\QuaternionSlerpCustomEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\AboutWindow.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\AssetGUIDs.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\ContextToolWindow.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\EditorStartupPrefs.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\FsmActionWindow.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\FsmComponentInspector.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\FsmEditorHelpers.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\FsmEditorWindow.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\FsmErrorWindow.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\FsmEventsWindow.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\FsmGlobalsWindow.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\FsmLogWindow.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\FsmSelectorWindow.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\FsmStateWindow.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\FsmTemplate.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\FsmTemplateEditor.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\FsmTemplateWindow.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\FsmTimelineWindow.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\PlayMakerAutoUpdater.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\PlayMakerBugReportWindow.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\PlayMakerBuildCallbacks.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\PlayMakerCustomActionWizard.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\PlayMakerDefines.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\PlayMakerEditorStartup.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\PlayMakerGUIInspector.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\PlayMakerGlobalsInspector.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\PlayMakerMainMenu.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\PlayMakerProjectTools.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\PlayMakerUpdater.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\PlayMakerUpgradeGuide.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\PlayMakerUpgradeTools.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\PlayMakerWelcomeWindow.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\PreUpdateChecker.cs" />
-    <Compile Include="Assets\PlayMaker\Editor\ReportWindow.cs" />
-    <Compile Include="Assets\iTween\PlayMaker\Editor\iTweenMoveToActionEditor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\PlayMaker\Editor\Install\readme.txt" />
-    <None Include="Assets\PlayMaker\Readme.txt" />
-    <None Include="Assets\PlayMaker\Resources\PlayMakerAssemblies.txt" />
-    <None Include="Assets\PlayMaker\Templates\readme.txt" />
-    <None Include="Assets\PlayMaker\Versions\readme.txt" />
     <None Include="Assets\Standard Assets\CrossPlatformInput\CrossPlatformInputGuidelines.txt" />
     <None Include="Assets\Standard Assets\Effects\GlassRefraction\Shaders\GlassStainedBumpDistort.shader" />
     <None Include="Assets\Standard Assets\Effects\ImageEffects\Shaders\BlendModesOverlay.shader" />
@@ -326,7 +202,6 @@
     <None Include="Assets\Standard Assets\ParticleSystems\Shaders\PriorityParticleAdd.shader" />
     <None Include="Assets\Standard Assets\ParticleSystems\Shaders\PriorityParticleAddSoft.shader" />
     <None Include="Assets\Standard Assets\ParticleSystems\Shaders\PriorityParticleAlpha.shader" />
-    <None Include="Assets\iTween\ReadMe!\ReadMe!.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
