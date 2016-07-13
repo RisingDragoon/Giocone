@@ -51,9 +51,9 @@ public class Player : Mobile
 			
 		if ( hor != 0 || ver != 0 )
 		{
-			if ( !axisPressed )
+			if ( !axisPressed && !busy )
 			{
-				if ( canMove && !moving && !busy )
+				if ( canMove && !moving )
 				{
 					if ( hor == 0 || ver == 0 ) // Se il giocatore prova a muoversi contemporaneamente su due assi, l'input viene ignorato.
 					{
@@ -69,7 +69,7 @@ public class Player : Mobile
 						gameController.CatchBeatTack();
 					}
 				}
-				else if ( !busy )
+				else
 				{
 					LoseLife();
                     loseLifeSound[0].Play(); // Suono che hai sbagliato.
@@ -175,6 +175,7 @@ public class Player : Mobile
     {
         loseLifeSound[1].Play();
     }
+	
     private void LoadNextLevel()
     {
         int sceneIndex = SceneManager.GetActiveScene().buildIndex;

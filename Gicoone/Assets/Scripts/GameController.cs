@@ -62,11 +62,11 @@ public class GameController : MonoBehaviour
 
         float frequency = bpm / 60.0f;
         
-        GameObject[] pulsers = GameObject.FindGameObjectsWithTag("Pulser");
+        GameObject[] pulsers = GameObject.FindGameObjectsWithTag( "Pulser" );
 
         foreach ( GameObject obj in pulsers )
         {
-            obj.GetComponent<Animator>().SetFloat("bpm", frequency);
+            obj.GetComponent<Animator>().SetFloat( "freq", frequency );
         }
 
         startTime = Time.time;
