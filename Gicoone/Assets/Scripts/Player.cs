@@ -35,7 +35,7 @@ public class Player : Mobile
         lives = maxLives;
 		
         loseLifeSound = GetComponents<AudioSource>();
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
         gameController = GameObject.FindGameObjectWithTag( "GameController" ).GetComponent<GameController>();
 		livesUI = GameObject.Find( "Canvas/LivesPanel" ).GetComponent<Slider>();
 		stealthUI = GameObject.Find( "Canvas/StealthBar" ).GetComponent<Slider>();
@@ -174,11 +174,5 @@ public class Player : Mobile
     public void PlayLoseLifeByProjectile()
     {
         loseLifeSound[1].Play();
-    }
-	
-    private void LoadNextLevel()
-    {
-        int sceneIndex = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(sceneIndex + 1);
     }
 }

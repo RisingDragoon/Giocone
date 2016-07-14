@@ -36,19 +36,23 @@ public class GameController : MonoBehaviour
 
         beatPlaying = false;
         tolerance = beat * 0.5f;
+
+        float frequency = bpm / 60.0f;
 		
-		player = GameObject.FindGameObjectWithTag( "Player" ).GetComponent<Player>();
-
+		GameObject playerObj = GameObject.FindGameObjectWithTag( "Player" );
+		player = playerObj.GetComponent<Player>();
+		playerObj.GetComponentInChildren<Animator>().SetFloat( "freq", frequency );
+		
         GameObject bossObj = GameObject.FindGameObjectWithTag( "Boss" );
-
+		
         if ( bossObj != null )
         {
             boss = bossObj.GetComponent<Boss>();
         }
-
+		
         enemies = new List<Turret>();
         GameObject[] enemiesObj = GameObject.FindGameObjectsWithTag( "Enemy" );
-
+		
         foreach ( GameObject obj in enemiesObj )
         {
             Turret enemy = obj.GetComponent<Turret>();
@@ -59,8 +63,6 @@ public class GameController : MonoBehaviour
 		beatTacks = new List<GameObject>();
 		
         audioSource = GetComponent<AudioSource>();
-
-        float frequency = bpm / 60.0f;
         
         GameObject[] pulsers = GameObject.FindGameObjectsWithTag( "Pulser" );
 

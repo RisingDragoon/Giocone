@@ -13,4 +13,10 @@ public class MenuNavigator : MonoBehaviour
 	{
 		Application.Quit();
 	}
+	
+    private void LoadNextLevel()
+    {
+        int sceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(sceneIndex + 1);
+    }
 }
