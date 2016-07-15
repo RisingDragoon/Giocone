@@ -6,7 +6,7 @@ public class MenuNavigator : MonoBehaviour
 {
     public void LoadNewGame()
     {
-        SceneManager.LoadScene( "Lv1" );
+        SceneManager.LoadScene( "Intro" );
     }
 	
 	public void QuitGame()
