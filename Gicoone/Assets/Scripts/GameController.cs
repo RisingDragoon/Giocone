@@ -57,6 +57,11 @@ public class GameController : MonoBehaviour
         {
             Turret enemy = obj.GetComponent<Turret>();
             enemies.Add( enemy );
+			
+			Animator enemyAnim = obj.GetComponent<Animator>();
+			
+			if ( enemyAnim != null )
+				enemyAnim.SetFloat( "freq", frequency );
         }
 		
 		rhythmUI = GameObject.Find( "Canvas/RhythmBar" ).transform;
