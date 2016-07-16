@@ -1,42 +1,15 @@
 fileFormatVersion: 2
-guid: f38bba3a15a76b54d98b8bfae5b39dac
-timeCreated: 1465808218
+guid: 566f955375859764e9985f169ea62f55
+timeCreated: 1468674710
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
-    100002: corpo
-    100004: mandibola
-    100006: mano0_DX
-    100008: mano_SX
-    100010: ruota
-    100012: testa_sopra
     400000: //RootNode
-    400002: corpo
-    400004: mandibola
-    400006: mano0_DX
-    400008: mano_SX
-    400010: ruota
-    400012: testa_sopra
-    2300000: corpo
-    2300002: mandibola
-    2300004: mano0_DX
-    2300006: mano_SX
-    2300008: ruota
-    2300010: testa_sopra
-    3300000: corpo
-    3300002: mandibola
-    3300004: mano0_DX
-    3300006: mano_SX
-    3300008: ruota
-    3300010: testa_sopra
+    2300000: //RootNode
+    3300000: //RootNode
     4300000: ruota
-    4300002: corpo
-    4300004: mandibola
-    4300006: testa_sopra
-    4300008: mano0_DX
-    4300010: mano_SX
     9500000: //RootNode
   materials:
     importMaterials: 1

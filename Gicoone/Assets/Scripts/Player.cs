@@ -125,7 +125,8 @@ public class Player : Mobile
 		if ( lives == 0 )
 		{
 			// Gestire il game over.
-			Debug.Log( "Il player è morto!" );
+			SceneManager.LoadScene( SceneManager.GetActiveScene().buildIndex );
+			//Debug.Log( "Il player è morto!" );
 		}
 		
         UpdateLivesUI();

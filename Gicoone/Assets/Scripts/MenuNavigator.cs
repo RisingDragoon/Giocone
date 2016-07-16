@@ -17,6 +17,15 @@ public class MenuNavigator : MonoBehaviour
     private void LoadNextLevel()
     {
         int sceneIndex = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(sceneIndex + 1);
+
+		if (sceneIndex == 12)
+		{
+			SceneManager.LoadScene( "MainMenu" );
+		}
+		else {
+			SceneManager.LoadScene (sceneIndex + 1);
+		}
     }
+
+
 }
